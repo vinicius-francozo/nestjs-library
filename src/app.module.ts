@@ -10,10 +10,19 @@ import { ReviewsModule } from "./reviews/reviews.module";
 import { AuthorsModule } from "./authors/authors.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
+import { AuthModule } from "./auth/auth.module";
+import { UserEntity } from "./users/entities/user.entity";
+import { AuthorEntity } from "./authors/entities/author.entity";
+import { BookEntity } from "./books/entities/book.entity";
+import { CategoryEntity } from "./categories/entities/category.entity";
+import { FavoriteEntity } from "./favorites/entities/favorite.entity";
+import { RentEntity } from "./rents/entities/rent.entity";
+import { ReviewEntity } from "./reviews/entities/review.entity";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    AuthModule,
     UsersModule,
     BooksModule,
     CategoriesModule,
@@ -28,7 +37,16 @@ import { ConfigModule } from "@nestjs/config";
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [],
+      entities: [
+        UserEntity,
+        AuthorEntity,
+        BookEntity,
+        CategoryEntity,
+        FavoriteEntity,
+        RentEntity,
+        ReviewEntity,
+      ],
+      synchronize: true,
     }),
   ],
   controllers: [AppController],

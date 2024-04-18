@@ -21,9 +21,9 @@ export class CreateAuthorDto {
   @IsNotEmpty()
   picture: string;
 
-  @IsDate()
+  @IsString()
   @IsNotEmpty()
-  birth_date: Date;
+  birth_date: string;
 
   @IsNumber()
   @IsNotEmpty()

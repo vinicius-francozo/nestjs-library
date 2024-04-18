@@ -25,19 +25,19 @@ export class CreateBookDto {
   @IsNotEmpty()
   pages: number;
 
-  @IsDate()
+  @IsString()
   @IsNotEmpty()
-  releaseDate: Date;
+  release_date: string;
 
   @IsNumber()
   @IsNotEmpty()
-  authorId: number;
+  author_id: number;
 
   @IsNumber()
   @IsNotEmpty()
-  categoryId: number;
+  category_id: number;
 
   @IsNumber()
   @IsNotEmpty()
-  userId: number;
+  user_id: number;
 }
