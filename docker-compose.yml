@@ -16,6 +16,11 @@ services:
       interval: 2s
       timeout: 10s
       retries: 10
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
   # react:
   #   build: ./library-front-end
   #   container_name: react

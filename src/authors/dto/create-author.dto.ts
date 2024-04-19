@@ -24,8 +24,4 @@ export class CreateAuthorDto {
   @IsString()
   @IsNotEmpty()
   birth_date: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  user_id: number;
 }

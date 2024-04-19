@@ -1,12 +1,6 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  IsStrongPassword,
-} from "class-validator";
+import { IsNotEmpty } from "class-validator";
 
 export class ChangeImageUserDto {
-  @IsString()
   @IsNotEmpty()
   image: string;
 }

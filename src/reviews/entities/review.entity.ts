@@ -1,3 +1,4 @@
+import { IsInt, IsNumber, Max, Min } from "class-validator";
 import { BookEntity } from "src/books/entities/book.entity";
 import { UserEntity } from "src/users/entities/user.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";

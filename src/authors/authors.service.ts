@@ -1,26 +1,93 @@
-import { Injectable } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateAuthorDto } from "./dto/create-author.dto";
 import { UpdateAuthorDto } from "./dto/update-author.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { CreateBookDto } from "src/books/dto/create-book.dto";
+import { UpdateBookDto } from "src/books/dto/update-book.dto";
+import { UserEntity } from "src/users/entities/user.entity";
+import { Repository, ILike } from "typeorm";
+import { AuthorEntity } from "./entities/author.entity";
 
 @Injectable()
 export class AuthorsService {
-  create(createAuthorDto: CreateAuthorDto) {
-    return "This action adds a new author";
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+
+    @InjectRepository(AuthorEntity)
+    private authorRepository: Repository<AuthorEntity>
+  ) {}
+
+  async create(userId: number, createAuthorDto: CreateAuthorDto) {
+    let user: UserEntity;
+
+    try {
+      user = await this.userRepository.findOneByOrFail({ id: userId });
+    } catch {
+      throw new NotFoundException(
+        "Um desses campos não foram encontrados no banco de dados: [Usuário]"
+      );
+    }
+    const authorExists = await this.authorRepository.existsBy({
+      name: createAuthorDto.name,
+      surname: createAuthorDto.surname,
+    });
+    if (!authorExists) {
+      const dateParts = createAuthorDto.birth_date.split("/");
+      const author = this.authorRepository.create({
+        ...createAuthorDto,
+        user,
+      });
+      await this.authorRepository.save([author]);
+      return author;
+    }
+    throw new ConflictException("Já existe um autor com esse nome cadastrado");
   }
 
-  search() {
-    return `This action returns all authors with pagination`;
+  async searchPaginated(perPage: number, page: number) {
+    const authors = await this.authorRepository.find({
+      skip: page > 0 ? (page - 1) * perPage : 1,
+      take: perPage > 0 ? perPage : 15,
+      select: { user: { id: true } },
+      relations: { user: true },
+    });
+
+    return authors;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} author`;
+  async findAll() {
+    const authors = await this.authorRepository.find({
+      select: { user: { id: true } },
+      relations: { user: true },
+    });
+
+    return authors;
   }
 
-  update(id: number, updateAuthorDto: UpdateAuthorDto) {
-    return `This action updates a #${id} author`;
+  async findOne(id: number) {
+    const author = await this.authorRepository.find({
+      where: { id },
+      select: { user: { id: true } },
+      relations: { user: true },
+    });
+
+    return author;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} author`;
+  async update(id: number, updateAuthorDto: UpdateAuthorDto) {
+    await this.authorRepository.update(id, updateAuthorDto);
+    return Object.assign(updateAuthorDto, { id });
+  }
+
+  async remove(id: number) {
+    const isDeleted = await this.authorRepository.delete(id);
+    if (isDeleted.affected > 0) {
+      return { message: "autor deletado com sucesso" };
+    }
+    return { message: "autor não encontrado" };
   }
 }

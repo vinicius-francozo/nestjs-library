@@ -36,8 +36,4 @@ export class CreateBookDto {
   @IsNumber()
   @IsNotEmpty()
   category_id: number;
-
-  @IsNumber()
-  @IsNotEmpty()
-  user_id: number;
 }

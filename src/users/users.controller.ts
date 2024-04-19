@@ -4,15 +4,18 @@ import {
   Post,
   Body,
   Param,
-  Delete,
   Put,
   ParseIntPipe,
   Patch,
+  UseGuards,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { ChangeImageUserDto } from "./dto/change-image-user.dto";
+import { AuthGuard } from "src/auth/auth.guard";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @Controller("users")
 export class UsersController {
@@ -28,6 +31,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @UseGuards(AuthGuard)
   @Put(":id")
   update(
     @Param("id", ParseIntPipe) id: number,
@@ -36,16 +40,13 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @Patch(":id")
+  @UseInterceptors(FileInterceptor("image"))
+  @UseGuards(AuthGuard)
+  @Patch("/changeImage/:userId")
   changeImage(
-    @Param("id", ParseIntPipe) id: number,
-    @Body() changeImageUserDto: ChangeImageUserDto
+    @Param("userId", ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File
   ) {
-    return this.usersService.changeImage(id, changeImageUserDto);
-  }
-
-  @Delete(":id")
-  remove(@Param("id", ParseIntPipe) id: number) {
-    return this.usersService.remove(id);
+    return this.usersService.changeImage(id, file);
   }
 }

@@ -18,6 +18,7 @@ import { CategoryEntity } from "./categories/entities/category.entity";
 import { FavoriteEntity } from "./favorites/entities/favorite.entity";
 import { RentEntity } from "./rents/entities/rent.entity";
 import { ReviewEntity } from "./reviews/entities/review.entity";
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { ReviewEntity } from "./reviews/entities/review.entity";
       ],
       synchronize: true,
     }),
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

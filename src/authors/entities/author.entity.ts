@@ -31,7 +31,6 @@ export class AuthorEntity {
   picture: string;
 
   @Column({
-    type: "date",
     nullable: false,
   })
   birth_date: string;

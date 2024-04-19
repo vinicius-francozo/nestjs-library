@@ -7,6 +7,9 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "src/users/entities/user.entity";
 import { Repository } from "typeorm";
+import * as bcrypt from "bcrypt";
+import { error } from "console";
+require("dotenv").config();
 
 @Injectable()
 export class AuthService {
@@ -17,21 +20,30 @@ export class AuthService {
   ) {}
 
   async createToken(user: UserEntity) {
-    return this.JwtService.sign({});
+    return this.JwtService.sign({
+      id: user.id,
+      username: user.username,
+      isAdmin: user.isAdmin,
+    });
   }
 
-  async verifyToken() {
-    // return this.JwtService.verify()
+  async verifyToken(token: string) {
+    return this.JwtService.verifyAsync(token, {
+      secret: process.env.JWT_SECRET,
+    });
   }
 
-  async login(email: string, password: string) {
+  async login(username: string, password: string) {
     try {
       const user = await this.userRepository.findOneByOrFail({
-        email,
-        password,
+        username,
       });
 
-      return true;
+      if (!(await bcrypt.compare(password, user.password))) {
+        throw new Error();
+      }
+
+      return await this.createToken(user);
     } catch {
       throw new UnauthorizedException("Email e/ou senha incorretos");
     }

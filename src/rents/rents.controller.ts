@@ -7,46 +7,60 @@ import {
   Param,
   Delete,
   Put,
+  UseGuards,
+  Req,
 } from "@nestjs/common";
 import { RentsService } from "./rents.service";
 import { CreateRentDto } from "./dto/create-rent.dto";
+import { AuthGuard } from "src/auth/auth.guard";
 
 @Controller("rents")
 export class RentsController {
   constructor(private readonly rentsService: RentsService) {}
 
+  @UseGuards(AuthGuard)
   @Post(":bookId")
-  create(@Body() createRentDto: CreateRentDto) {
-    return this.rentsService.create(createRentDto);
+  create(
+    @Body() createRentDto: CreateRentDto,
+    @Param("bookId") bookId: string,
+    @Req() req
+  ) {
+    return this.rentsService.create(+req.user.id, +bookId, createRentDto);
   }
 
+  @UseGuards(AuthGuard)
   @Get("/checkout")
-  listCheckout(@Param("userIDButTheUserIdComesInTheToken") userId: string) {
-    return this.rentsService.listCheckout(+userId);
+  listCheckout(@Req() req) {
+    return this.rentsService.listCheckout(+req.user.id);
   }
 
+  @UseGuards(AuthGuard)
   @Get("/checkout/:bookId")
-  getOneCheckoutOrRented(@Param() ids: { userId: string; bookId: string }) {
-    return this.rentsService.getOneCheckoutOrRented(+ids.userId, +ids.bookId);
+  getOneCheckoutOrRented(@Param("bookId") bookId: string, @Req() req) {
+    return this.rentsService.getOneCheckoutOrRented(+req.user.id, +bookId);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
-  listRents(@Param("userIDButTheUserIdComesInTheToken") userId: string) {
-    return this.rentsService.listRents(+userId);
+  listRents(@Req() req) {
+    return this.rentsService.listRents(+req.user.id);
   }
 
+  @UseGuards(AuthGuard)
   @Put()
-  confirmPurchase(@Param("userIDButTheUserIdComesInTheToken") userId: string) {
-    return this.rentsService.confirmPurchase(+userId);
+  confirmPurchase(@Req() req) {
+    return this.rentsService.confirmPurchase(+req.user.id);
   }
 
-  @Patch(":id")
-  returnBook(@Param() ids: { rentId: string; userId: string }) {
-    return this.rentsService.returnBook(+ids.rentId, +ids.userId);
+  @UseGuards(AuthGuard)
+  @Patch(":rentId")
+  returnBook(@Param("rentId") rentId: string, @Req() req) {
+    return this.rentsService.returnBook(+req.user.id, +rentId);
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.rentsService.remove(+id);
+  @UseGuards(AuthGuard)
+  @Delete(":rentId")
+  remove(@Param("rentId") rentId: string, @Req() req) {
+    return this.rentsService.remove(+req.user.id, +rentId);
   }
 }

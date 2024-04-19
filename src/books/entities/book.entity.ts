@@ -32,7 +32,7 @@ export class BookEntity {
   @Column({ nullable: false })
   edition: string;
 
-  @Column({ nullable: false, type: "date" })
+  @Column({ nullable: false })
   release_date: string;
 
   @Column({ nullable: false })
