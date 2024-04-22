@@ -24,19 +24,22 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    try {
-      const hashPassword = await bcrypt.hash(createUserDto.password, 10);
+    if (createUserDto.confirmPassword === createUserDto.password) {
+      try {
+        const hashPassword = await bcrypt.hash(createUserDto.password, 10);
 
-      const user = this.userRepository.create({
-        ...createUserDto,
-        password: hashPassword,
-      });
-      await this.userRepository.save([user]);
+        const user = this.userRepository.create({
+          ...createUserDto,
+          password: hashPassword,
+        });
+        await this.userRepository.save([user]);
 
-      return await this.authService.createToken(user);
-    } catch(err) {
-      throw new InternalServerErrorException("Esse email já existe");
+        return await this.authService.createToken(user);
+      } catch (err) {
+        throw new InternalServerErrorException("Esse email já existe");
+      }
     }
+    throw new BadRequestException("As senhas não coincidem.");
   }
 
   async findOne(id: number) {
@@ -56,18 +59,22 @@ export class UsersService {
   }
 
   async changeImage(userId: number, file: Express.Multer.File) {
-    const upfile = await this.cloudinaryService.uploadImage(file).catch(() => {
-      throw new BadRequestException("Invalid file type.");
-    });
-
-    await this.userRepository.update(
-      { id: userId },
-      { image: upfile.secure_url }
-    );
-
     const user = await this.userRepository.findOneBy({ id: userId });
-    delete user.password;
+    if (user) {
+      const upfile = await this.cloudinaryService
+        .uploadImage(file)
+        .catch(() => {
+          throw new BadRequestException("Invalid file type.");
+        });
 
-    return user;
+      await this.userRepository.update(
+        { id: userId },
+        { image: upfile.secure_url }
+      );
+
+      delete user.password;
+      return user;
+    }
+    throw new NotFoundException("Usuário não encontrado");
   }
 }

@@ -28,7 +28,7 @@ export class AuthService {
 
   async verifyToken(token: string) {
     return this.JwtService.verifyAsync(token, {
-      secret: 'zx9b8TaclszHUcUg4JRQm78IgEtF1MqkE_RCux4htBK_dYBnxDb',
+      secret: process.env.JWT_SECRET,
     });
   }
 

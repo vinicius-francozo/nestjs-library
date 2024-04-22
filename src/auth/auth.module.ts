@@ -10,7 +10,7 @@ require("dotenv").config();
 @Module({
   imports: [
     JwtModule.register({
-      secret: 'zx9b8TaclszHUcUg4JRQm78IgEtF1MqkE_RCux4htBK_dYBnxDb',
+      secret: process.env.JWT_SECRET,
     }),
     forwardRef(() => UsersModule),
     TypeOrmModule.forFeature([UserEntity]),
