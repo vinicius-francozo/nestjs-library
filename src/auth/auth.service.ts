@@ -8,7 +8,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "src/users/entities/user.entity";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
-import { error } from "console";
 require("dotenv").config();
 
 @Injectable()
@@ -29,7 +28,7 @@ export class AuthService {
 
   async verifyToken(token: string) {
     return this.JwtService.verifyAsync(token, {
-      secret: process.env.JWT_SECRET,
+      secret: 'zx9b8TaclszHUcUg4JRQm78IgEtF1MqkE_RCux4htBK_dYBnxDb',
     });
   }
 

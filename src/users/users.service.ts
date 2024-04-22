@@ -6,7 +6,6 @@ import {
 } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { ChangeImageUserDto } from "./dto/change-image-user.dto";
 import { Repository } from "typeorm";
 import { UserEntity } from "./entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -35,7 +34,7 @@ export class UsersService {
       await this.userRepository.save([user]);
 
       return await this.authService.createToken(user);
-    } catch {
+    } catch(err) {
       throw new InternalServerErrorException("Esse email já existe");
     }
   }

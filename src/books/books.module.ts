@@ -7,6 +7,7 @@ import { CategoryEntity } from "src/categories/entities/category.entity";
 import { UserEntity } from "src/users/entities/user.entity";
 import { AuthorEntity } from "src/authors/entities/author.entity";
 import { AuthModule } from "src/auth/auth.module";
+import { CloudinaryModule } from "src/cloudinary/cloudinary.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthModule } from "src/auth/auth.module";
       AuthorEntity,
     ]),
     AuthModule,
+    CloudinaryModule
   ],
   controllers: [BooksController],
   providers: [BooksService],

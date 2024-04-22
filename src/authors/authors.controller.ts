@@ -9,20 +9,25 @@ import {
   Req,
   Query,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
 import { AuthorsService } from "./authors.service";
 import { CreateAuthorDto } from "./dto/create-author.dto";
 import { UpdateAuthorDto } from "./dto/update-author.dto";
 import { AuthGuard } from "src/auth/auth.guard";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @Controller("authors")
 export class AuthorsController {
   constructor(private readonly authorsService: AuthorsService) {}
-
+  
+  @UseInterceptors(FileInterceptor("picture"))
   @UseGuards(AuthGuard)
   @Post()
-  create(@Body() createAuthorDto: CreateAuthorDto, @Req() req) {
-    return this.authorsService.create(+req.user.id, createAuthorDto);
+  create(  @UploadedFile() file: Express.Multer.File,
+   @Body() createAuthorDto: CreateAuthorDto, @Req() req) {
+    return this.authorsService.create(+req.user.id, createAuthorDto, file);
   }
 
   @Get("/perPage")
@@ -40,10 +45,11 @@ export class AuthorsController {
     return this.authorsService.findOne(+id);
   }
 
+  @UseInterceptors(FileInterceptor("picture"))
   @UseGuards(AuthGuard)
   @Put(":id")
-  update(@Param("id") id: string, @Body() updateAuthorDto: UpdateAuthorDto) {
-    return this.authorsService.update(+id, updateAuthorDto);
+  update(@UploadedFile() file: Express.Multer.File, @Param("id") id: string, @Body() updateAuthorDto: UpdateAuthorDto) {
+    return this.authorsService.update(+id, updateAuthorDto, file);
   }
 
   @UseGuards(AuthGuard)

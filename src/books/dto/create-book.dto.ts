@@ -17,11 +17,10 @@ export class CreateBookDto {
   @IsNotEmpty()
   edition: string;
 
-  @IsString()
-  @IsNotEmpty()
-  cover: string;
+  // @IsNotEmpty()
+  // cover: string;
 
-  @IsNumber()
+  // @IsNumber()
   @IsNotEmpty()
   pages: number;
 
@@ -29,11 +28,11 @@ export class CreateBookDto {
   @IsNotEmpty()
   release_date: string;
 
-  @IsNumber()
+  // @IsNumber()
   @IsNotEmpty()
   author_id: number;
 
-  @IsNumber()
+  // @IsNumber()
   @IsNotEmpty()
   category_id: number;
 }

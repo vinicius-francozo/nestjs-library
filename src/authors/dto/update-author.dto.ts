@@ -4,6 +4,6 @@ import { ForbiddenValue } from "src/shared/validators/forbidden-validator";
 import { Validate } from "class-validator";
 
 export class UpdateAuthorDto extends PartialType(CreateAuthorDto) {
-  @Validate(ForbiddenValue)
-  user_id: number;
+  // @Validate(ForbiddenValue)
+  // user_id: number;
 }

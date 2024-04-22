@@ -9,6 +9,6 @@ import {
 import { ForbiddenValue } from "src/shared/validators/forbidden-validator";
 
 export class UpdateBookDto extends PartialType(CreateBookDto) {
-  @Validate(ForbiddenValue)
-  userId: number;
+  // @Validate(ForbiddenValue)
+  // userId: number;
 }

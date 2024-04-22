@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -11,6 +12,7 @@ import { UpdateBookDto } from "src/books/dto/update-book.dto";
 import { UserEntity } from "src/users/entities/user.entity";
 import { Repository, ILike } from "typeorm";
 import { AuthorEntity } from "./entities/author.entity";
+import { CloudinaryService } from "src/cloudinary/cloudinary.service";
 
 @Injectable()
 export class AuthorsService {
@@ -19,19 +21,26 @@ export class AuthorsService {
     private userRepository: Repository<UserEntity>,
 
     @InjectRepository(AuthorEntity)
-    private authorRepository: Repository<AuthorEntity>
+    private authorRepository: Repository<AuthorEntity>,
+
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  async create(userId: number, createAuthorDto: CreateAuthorDto) {
-    let user: UserEntity;
+  async create(userId: number, createAuthorDto: CreateAuthorDto, file: Express.Multer.File) {
+    // let user: UserEntity;
 
-    try {
-      user = await this.userRepository.findOneByOrFail({ id: userId });
-    } catch {
-      throw new NotFoundException(
-        "Um desses campos não foram encontrados no banco de dados: [Usuário]"
-      );
-    }
+    // try {
+    //   user = await this.userRepository.findOneByOrFail({ id: userId });
+    // } catch {
+    //   throw new NotFoundException(
+    //     "Um desses campos não foram encontrados no banco de dados: [Usuário]"
+    //   );
+    // }
+
+    const upfile = await this.cloudinaryService.uploadImage(file).catch(() => {
+      throw new BadRequestException("Invalid file type.");
+    });
+    
     const authorExists = await this.authorRepository.existsBy({
       name: createAuthorDto.name,
       surname: createAuthorDto.surname,
@@ -40,7 +49,8 @@ export class AuthorsService {
       const dateParts = createAuthorDto.birth_date.split("/");
       const author = this.authorRepository.create({
         ...createAuthorDto,
-        user,
+        picture: upfile.secure_url
+        // user,
       });
       await this.authorRepository.save([author]);
       return author;
@@ -78,7 +88,15 @@ export class AuthorsService {
     return author;
   }
 
-  async update(id: number, updateAuthorDto: UpdateAuthorDto) {
+  async update(id: number, updateAuthorDto: UpdateAuthorDto, file: Express.Multer.File) {
+    if (file){
+      const upfile = await this.cloudinaryService.uploadImage(file).catch(() => {
+        throw new BadRequestException("Invalid file type.");
+      });
+
+      await this.authorRepository.update(id, {...updateAuthorDto, picture: upfile.secure_url});
+      return Object.assign(updateAuthorDto, { id });
+    }
     await this.authorRepository.update(id, updateAuthorDto);
     return Object.assign(updateAuthorDto, { id });
   }
