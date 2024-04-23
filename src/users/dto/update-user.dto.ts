@@ -1,52 +1,62 @@
-import { PartialType } from "@nestjs/mapped-types";
-import { CreateUserDto } from "./create-user.dto";
-import {
-  IsString,
-  IsNotEmpty,
-  IsStrongPassword,
-  IsEmail,
-  IsOptional,
-} from "class-validator";
+import { IsString, IsEmail, IsOptional } from "class-validator";
+import { Field, InputType } from "@nestjs/graphql";
+import { FileUpload } from "graphql-upload-ts";
+import GraphQLUpload from "graphql-upload/GraphQLUpload.js";
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {
+@InputType()
+export class UpdateUserDto {
   @IsString()
   @IsOptional()
-  username: string;
+  @Field({ nullable: true })
+  username?: string;
 
   @IsString()
   @IsEmail()
+  @Field({ nullable: true })
   @IsOptional()
-  email: string;
+  email?: string;
 
   @IsString()
+  @Field({ nullable: true })
   @IsOptional()
-  surname: string;
+  surname?: string;
 
   @IsString()
+  @Field({ nullable: true })
   @IsOptional()
-  age: number;
+  age?: number;
 
   @IsString()
+  @Field({ nullable: true })
   @IsOptional()
-  phone: string;
+  phone?: string;
 
   @IsOptional()
+  @Field({ nullable: true })
   @IsString()
-  street: string;
+  street?: string;
 
   @IsOptional()
+  @Field({ nullable: true })
   @IsString()
-  neighbourhood: string;
+  neighbourhood?: string;
 
   @IsOptional()
+  @Field({ nullable: true })
   @IsString()
-  number: string;
+  number?: string;
 
   @IsOptional()
+  @Field({ nullable: true })
   @IsString()
-  city: string;
+  city?: string;
 
   @IsOptional()
+  @Field({ nullable: true })
   @IsString()
-  country: string;
+  country?: string;
+
+  @Field(() => GraphQLUpload, { nullable: true })
+  @IsOptional()
+  image?: Promise<FileUpload>;
 }

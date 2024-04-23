@@ -1,14 +1,17 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateBookDto } from "./dto/create-book.dto";
 import { UpdateBookDto } from "./dto/update-book.dto";
 import { ILike, Repository } from "typeorm";
 import { BookEntity } from "./entities/book.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserEntity } from "src/users/entities/user.entity";
-import { AuthorEntity } from "src/authors/entities/author.entity";
-import { CategoryEntity } from "src/categories/entities/category.entity";
-import { CloudinaryService } from "src/cloudinary/cloudinary.service";
-import { UploadApiErrorResponse, UploadApiResponse } from "cloudinary";
+import { AuthorEntity } from "../authors/entities/author.entity";
+import { CategoryEntity } from "../categories/entities/category.entity";
+import { CloudinaryService } from "../cloudinary/cloudinary.service";
+import { UserEntity } from "../users/entities/user.entity";
 
 @Injectable()
 export class BooksService {
@@ -25,38 +28,40 @@ export class BooksService {
     @InjectRepository(CategoryEntity)
     private categoryRepository: Repository<CategoryEntity>,
 
-    private readonly cloudinaryService: CloudinaryService,
+    private readonly cloudinaryService: CloudinaryService
   ) {}
 
-  async create(userId: number, createBookDto: CreateBookDto, file: Express.Multer.File) {
-    // let user: UserEntity;
-    // let author: AuthorEntity;
-    // let category: CategoryEntity;
+  async create(userId: number, createBookDto: CreateBookDto) {
+    let user: UserEntity;
+    let author: AuthorEntity;
+    let category: CategoryEntity;
 
-    // try {
-    //   user = await this.userRepository.findOneByOrFail({ id: userId });
-    //   author = await this.authorRepository.findOneByOrFail({
-    //     id: createBookDto.author_id,
-    //   });
-    //   category = await this.categoryRepository.findOneByOrFail({
-    //     id: createBookDto.category_id,
-    //   });
-    // } catch {
-    //   throw new NotFoundException(
-    //     "Um desses campos não foram encontrados no banco de dados: [Usuário, Autor, Categoria]"
-    //   );
-    // }
-    const upfile = await this.cloudinaryService.uploadImage(file).catch(() => {
-      throw new BadRequestException("Invalid file type.");
-    });
-  
+    try {
+      user = await this.userRepository.findOneByOrFail({ id: userId });
+      author = await this.authorRepository.findOneByOrFail({
+        id: createBookDto.author_id,
+      });
+      category = await this.categoryRepository.findOneByOrFail({
+        id: createBookDto.category_id,
+      });
+    } catch {
+      throw new NotFoundException(
+        "Um desses campos não foram encontrados no banco de dados: [Usuário, Autor, Categoria]"
+      );
+    }
+
+    const upfile = await this.cloudinaryService
+      .uploadImage(await createBookDto.cover)
+      .catch(() => {
+        throw new BadRequestException("Invalid file type.");
+      });
+
     const book = this.bookRepository.create({
       ...createBookDto,
       cover: upfile.secure_url,
-      pages: 1,
-      // author,
-      // category,
-      // user,
+      author,
+      category,
+      user,
     });
     await this.bookRepository.save([book]);
     return book;
@@ -72,7 +77,7 @@ export class BooksService {
     return books;
   }
 
-  async findAll() {
+  async findAll(): Promise<BookEntity[]> {
     const books = await this.bookRepository.find({
       select: { author: { id: true, name: true, surname: true } },
       relations: { category: true, author: true },
@@ -82,7 +87,7 @@ export class BooksService {
   }
 
   async findOne(id: number) {
-    const book = await this.bookRepository.find({
+    const book = await this.bookRepository.findOne({
       where: { id },
       select: {
         category: { id: true, name: true },
@@ -109,24 +114,44 @@ export class BooksService {
     return book;
   }
 
-  async update(id: number, updateBookDto: UpdateBookDto, file?: Express.Multer.File) {
-    if (file){
-      const upfile = await this.cloudinaryService.uploadImage(file).catch(() => {
-        throw new BadRequestException("Invalid file type.");
+  async update(id: number, updateBookDto: UpdateBookDto) {
+    const book = await this.bookRepository.findOneBy({ id });
+    if (book) {
+      if (updateBookDto.cover) {
+        const upfile = await this.cloudinaryService
+          .uploadImage(await updateBookDto.cover)
+          .catch(() => {
+            throw new BadRequestException("Invalid file type.");
+          });
+
+        await this.bookRepository.update(id, {
+          ...updateBookDto,
+          cover: upfile.secure_url,
+        });
+
+        return this.bookRepository.create({
+          ...updateBookDto,
+          cover: upfile.secure_url,
+        });
+      }
+      await this.bookRepository.update(id, {
+        ...updateBookDto,
+        cover: book.cover,
       });
 
-      await this.bookRepository.update(id, {...updateBookDto, cover: upfile.secure_url});
-      return Object.assign(updateBookDto, { id })
+      return this.bookRepository.create({
+        ...updateBookDto,
+        cover: book.cover,
+      });
     }
-    await this.bookRepository.update(id, updateBookDto);
-    return Object.assign(updateBookDto, { id });
+    throw new NotFoundException("Livro não encontrado");
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<boolean> {
     const isDeleted = await this.bookRepository.delete(id);
     if (isDeleted.affected > 0) {
-      return { message: "livro deletado com sucesso" };
+      return true;
     }
-    return { message: "livro não encontrado" };
+    return false;
   }
 }

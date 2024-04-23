@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { BookEntity } from "src/books/entities/book.entity";
 import { UserEntity } from "src/users/entities/user.entity";
 import { AuthModule } from "src/auth/auth.module";
+import { FavoritesResolver } from "./favorites.resolvers";
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { AuthModule } from "src/auth/auth.module";
     AuthModule,
   ],
   controllers: [FavoritesController],
-  providers: [FavoritesService],
+  providers: [FavoritesService, FavoritesResolver],
 })
 export class FavoritesModule {}

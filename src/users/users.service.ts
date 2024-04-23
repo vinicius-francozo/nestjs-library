@@ -9,9 +9,10 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { Repository } from "typeorm";
 import { UserEntity } from "./entities/user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { AuthService } from "src/auth/auth.service";
 import * as bcrypt from "bcrypt";
-import { CloudinaryService } from "src/cloudinary/cloudinary.service";
+import { FileUpload, Upload } from "graphql-upload-ts";
+import { AuthService } from "../auth/auth.service";
+import { CloudinaryService } from "../cloudinary/cloudinary.service";
 
 @Injectable()
 export class UsersService {
@@ -23,7 +24,7 @@ export class UsersService {
     private userRepository: Repository<UserEntity>
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     if (createUserDto.confirmPassword === createUserDto.password) {
       try {
         const hashPassword = await bcrypt.hash(createUserDto.password, 10);
@@ -34,7 +35,8 @@ export class UsersService {
         });
         await this.userRepository.save([user]);
 
-        return await this.authService.createToken(user);
+        console.log(user);
+        return user;
       } catch (err) {
         throw new InternalServerErrorException("Esse email já existe");
       }
@@ -42,7 +44,7 @@ export class UsersService {
     throw new BadRequestException("As senhas não coincidem.");
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<UserEntity> {
     let user: UserEntity;
     try {
       user = await this.userRepository.findOneByOrFail({ id });
@@ -53,12 +55,35 @@ export class UsersService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const updatedUser = await this.userRepository.update({ id }, updateUserDto);
-    return updatedUser;
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    const user = await this.userRepository.findOneBy({ id });
+
+    if (user) {
+      delete user.password;
+      if (updateUserDto.image) {
+        const upfile = await this.cloudinaryService
+          .uploadImage(await updateUserDto.image)
+          .catch(() => {
+            throw new BadRequestException("Invalid file type.");
+          });
+
+        await this.userRepository.update(
+          { id: id },
+          { image: upfile.secure_url }
+        );
+
+        return user;
+      }
+      await this.userRepository.update(
+        { id },
+        { ...updateUserDto, image: user.image }
+      );
+      return user;
+    }
+    throw new NotFoundException("Usuário não encontrado");
   }
 
-  async changeImage(userId: number, file: Express.Multer.File) {
+  async changeImage(userId: number, file: FileUpload) {
     const user = await this.userRepository.findOneBy({ id: userId });
     if (user) {
       const upfile = await this.cloudinaryService

@@ -1,11 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { CreateRentDto } from "./dto/create-rent.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { BookEntity } from "src/books/entities/book.entity";
-import { UserEntity } from "src/users/entities/user.entity";
 import { Repository } from "typeorm";
 import { RentEntity } from "./entities/rent.entity";
-import { AuthorEntity } from "src/authors/entities/author.entity";
+import { AuthorEntity } from "../authors/entities/author.entity";
+import { BookEntity } from "../books/entities/book.entity";
+import { UserEntity } from "../users/entities/user.entity";
 
 @Injectable()
 export class RentsService {
@@ -17,42 +16,38 @@ export class RentsService {
     private bookRepository: Repository<BookEntity>,
 
     @InjectRepository(RentEntity)
-    private rentRepository: Repository<RentEntity>,
-
-    @InjectRepository(AuthorEntity)
-    private authorRepository: Repository<AuthorEntity>
+    private rentRepository: Repository<RentEntity>
   ) {}
 
-  async create(userId: number, bookId: number, createRentDto: CreateRentDto) {
+  async create(userId: number, bookId: number): Promise<boolean> {
     let book: BookEntity;
     let user: UserEntity;
     let rented: RentEntity;
     try {
+      console.log(bookId, userId);
       book = await this.bookRepository.findOneByOrFail({ id: bookId });
       user = await this.userRepository.findOneByOrFail({ id: userId });
-      rented = await this.rentRepository.findOneBy({
-        book,
-        user,
-        status: 0 || 1,
+      rented = await this.rentRepository.findOne({
+        where: [
+          { user, book, status: 0 },
+          { user, book, status: 1 },
+        ],
       });
     } catch {
       throw new NotFoundException(
         "Um desses campos não foram encontrados no banco de dados: [Livro, Usuário]"
       );
     }
-
     if (!rented) {
       const rent = this.rentRepository.create({
         book,
         user,
       });
       await this.rentRepository.save([rent]);
-      return {
-        message: "Livro adicionado ao carrinho",
-      };
+      return true;
     }
 
-    return { message: "Erro ao adicionar livro ao carrinho" };
+    return false;
   }
 
   async listCheckout(userId: number) {
@@ -96,7 +91,10 @@ export class RentsService {
     }
 
     const rentOrCheckout = await this.rentRepository.find({
-      where: { user, book, status: 0 || 1 },
+      where: [
+        { user, book, status: 0 },
+        { user, book, status: 1 },
+      ],
       select: {
         book: {
           id: true,
@@ -105,9 +103,10 @@ export class RentsService {
           sinopsis: true,
           author: { name: true },
         },
+        status: true,
       },
       relations: { book: { author: true } },
-    });
+    })[0];
 
     return rentOrCheckout;
   }
@@ -123,7 +122,7 @@ export class RentsService {
     }
 
     await this.rentRepository.update({ user, status: 0 }, { status: 1 });
-    return { message: "Livros alugados! confira em Meus Livros" };
+    return true;
   }
 
   async listRents(userId: number) {
@@ -163,12 +162,15 @@ export class RentsService {
       );
     }
 
-    const returnedBook = this.rentRepository.update(
+    const returnedBook = await this.rentRepository.update(
       { id: rentId, user, status: 1 },
       { status: 2 }
     );
 
-    return { message: "Livro devolvido com sucesso" };
+    if (returnedBook.affected > 0) {
+      return true;
+    }
+    return false;
   }
 
   async remove(userId: number, rentId: number) {
@@ -187,8 +189,8 @@ export class RentsService {
       status: 0,
     });
     if (isDeleted.affected > 0) {
-      return { message: "Aluguel deletado com sucesso" };
+      return true;
     }
-    return { message: "Aluguel não encontrado" };
+    return false;
   }
 }

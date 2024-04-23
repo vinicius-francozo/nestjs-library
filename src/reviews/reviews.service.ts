@@ -4,8 +4,8 @@ import { UpdateReviewDto } from "./dto/update-review.dto";
 import { ReviewEntity } from "./entities/review.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { UserEntity } from "src/users/entities/user.entity";
-import { BookEntity } from "src/books/entities/book.entity";
+import { BookEntity } from "../books/entities/book.entity";
+import { UserEntity } from "../users/entities/user.entity";
 
 @Injectable()
 export class ReviewsService {
@@ -53,16 +53,26 @@ export class ReviewsService {
     return reviews;
   }
 
-  async update(id: number, updateReviewDto: UpdateReviewDto) {
-    await this.reviewRepository.update(id, updateReviewDto);
-    return Object.assign(updateReviewDto, { id });
+  async update(
+    userId: number,
+    id: number,
+    updateReviewDto: UpdateReviewDto
+  ): Promise<boolean> {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    const isUpdated = await this.reviewRepository.update(
+      { id, user },
+      updateReviewDto
+    );
+    return isUpdated.affected > 0;
   }
 
-  async remove(id: number) {
-    const isDeleted = await this.reviewRepository.delete(id);
+  async remove(userId: number, id: number) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    const isDeleted = await this.reviewRepository.delete({ id, user });
     if (isDeleted.affected > 0) {
-      return { message: "review deletado com sucesso" };
+      return true;
     }
-    return { message: "review não encontrado" };
+    return false;
   }
 }

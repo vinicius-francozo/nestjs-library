@@ -7,12 +7,10 @@ import {
 import { CreateAuthorDto } from "./dto/create-author.dto";
 import { UpdateAuthorDto } from "./dto/update-author.dto";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CreateBookDto } from "src/books/dto/create-book.dto";
-import { UpdateBookDto } from "src/books/dto/update-book.dto";
-import { UserEntity } from "src/users/entities/user.entity";
 import { Repository, ILike } from "typeorm";
 import { AuthorEntity } from "./entities/author.entity";
-import { CloudinaryService } from "src/cloudinary/cloudinary.service";
+import { CloudinaryService } from "../cloudinary/cloudinary.service";
+import { UserEntity } from "../users/entities/user.entity";
 
 @Injectable()
 export class AuthorsService {
@@ -23,34 +21,37 @@ export class AuthorsService {
     @InjectRepository(AuthorEntity)
     private authorRepository: Repository<AuthorEntity>,
 
-    private readonly cloudinaryService: CloudinaryService,
+    private readonly cloudinaryService: CloudinaryService
   ) {}
 
-  async create(userId: number, createAuthorDto: CreateAuthorDto, file: Express.Multer.File) {
-    // let user: UserEntity;
+  async create(userId: number, createAuthorDto: CreateAuthorDto) {
+    let user: UserEntity;
 
-    // try {
-    //   user = await this.userRepository.findOneByOrFail({ id: userId });
-    // } catch {
-    //   throw new NotFoundException(
-    //     "Um desses campos não foram encontrados no banco de dados: [Usuário]"
-    //   );
-    // }
+    try {
+      user = await this.userRepository.findOneByOrFail({ id: userId });
+    } catch {
+      throw new NotFoundException(
+        "Um desses campos não foram encontrados no banco de dados: [Usuário]"
+      );
+    }
 
-    const upfile = await this.cloudinaryService.uploadImage(file).catch(() => {
-      throw new BadRequestException("Invalid file type.");
-    });
-    
     const authorExists = await this.authorRepository.existsBy({
       name: createAuthorDto.name,
       surname: createAuthorDto.surname,
     });
+
     if (!authorExists) {
+      const upfile = await this.cloudinaryService
+        .uploadImage(await createAuthorDto.picture)
+        .catch(() => {
+          throw new BadRequestException("Invalid file type.");
+        });
+
       const dateParts = createAuthorDto.birth_date.split("/");
       const author = this.authorRepository.create({
         ...createAuthorDto,
-        picture: upfile.secure_url
-        // user,
+        picture: upfile.secure_url,
+        user,
       });
       await this.authorRepository.save([author]);
       return author;
@@ -79,7 +80,7 @@ export class AuthorsService {
   }
 
   async findOne(id: number) {
-    const author = await this.authorRepository.find({
+    const author = await this.authorRepository.findOne({
       where: { id },
       select: { user: { id: true } },
       relations: { user: true },
@@ -88,24 +89,44 @@ export class AuthorsService {
     return author;
   }
 
-  async update(id: number, updateAuthorDto: UpdateAuthorDto, file: Express.Multer.File) {
-    if (file){
-      const upfile = await this.cloudinaryService.uploadImage(file).catch(() => {
-        throw new BadRequestException("Invalid file type.");
+  async update(id: number, updateAuthorDto: UpdateAuthorDto) {
+    const author = await this.authorRepository.findOneBy({ id });
+    if (author) {
+      if (updateAuthorDto.picture) {
+        const upfile = await this.cloudinaryService
+          .uploadImage(await updateAuthorDto.picture)
+          .catch(() => {
+            throw new BadRequestException("Invalid file type.");
+          });
+
+        await this.authorRepository.update(id, {
+          ...updateAuthorDto,
+          picture: upfile.secure_url,
+        });
+
+        return this.authorRepository.create({
+          ...updateAuthorDto,
+          picture: upfile.secure_url,
+        });
+      }
+      await this.authorRepository.update(id, {
+        ...updateAuthorDto,
+        picture: author.picture,
       });
 
-      await this.authorRepository.update(id, {...updateAuthorDto, picture: upfile.secure_url});
-      return Object.assign(updateAuthorDto, { id });
+      return this.authorRepository.create({
+        ...updateAuthorDto,
+        picture: author.picture,
+      });
     }
-    await this.authorRepository.update(id, updateAuthorDto);
-    return Object.assign(updateAuthorDto, { id });
+    throw new NotFoundException("Autor não encontrado");
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<boolean> {
     const isDeleted = await this.authorRepository.delete(id);
     if (isDeleted.affected > 0) {
-      return { message: "autor deletado com sucesso" };
+      return true;
     }
-    return { message: "autor não encontrado" };
+    return false;
   }
 }

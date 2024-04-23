@@ -8,6 +8,7 @@ import { UserEntity } from "src/users/entities/user.entity";
 import { AuthorEntity } from "src/authors/entities/author.entity";
 import { AuthModule } from "src/auth/auth.module";
 import { CloudinaryModule } from "src/cloudinary/cloudinary.module";
+import { BooksResolver } from "./books.resolvers";
 
 @Module({
   imports: [
@@ -18,9 +19,9 @@ import { CloudinaryModule } from "src/cloudinary/cloudinary.module";
       AuthorEntity,
     ]),
     AuthModule,
-    CloudinaryModule
+    CloudinaryModule,
   ],
   controllers: [BooksController],
-  providers: [BooksService],
+  providers: [BooksService, BooksResolver],
 })
 export class BooksModule {}

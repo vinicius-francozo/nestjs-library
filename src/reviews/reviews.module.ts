@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "src/auth/auth.module";
 import { UserEntity } from "src/users/entities/user.entity";
 import { BookEntity } from "src/books/entities/book.entity";
+import { ReviewsResolver } from "./reviews.resolvers";
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { BookEntity } from "src/books/entities/book.entity";
     AuthModule,
   ],
   controllers: [ReviewsController],
-  providers: [ReviewsService],
+  providers: [ReviewsService, ReviewsResolver],
 })
 export class ReviewsModule {}

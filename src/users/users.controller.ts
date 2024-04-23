@@ -21,32 +21,32 @@ import { FileInterceptor } from "@nestjs/platform-express";
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
+  // @Post()
+  // create(@Body() createUserDto: CreateUserDto) {
+  //   return this.usersService.create(createUserDto);
+  // }
 
-  @Get(":id")
-  findOne(@Param("id", ParseIntPipe) id: number) {
-    return this.usersService.findOne(id);
-  }
+  // @Get(":id")
+  // findOne(@Param("id", ParseIntPipe) id: number) {
+  //   return this.usersService.findOne(id);
+  // }
 
-  @UseGuards(AuthGuard)
-  @Put(":id")
-  update(
-    @Param("id", ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto
-  ) {
-    return this.usersService.update(id, updateUserDto);
-  }
+  // @UseGuards(AuthGuard)
+  // @Put(":id")
+  // update(
+  //   @Param("id", ParseIntPipe) id: number,
+  //   @Body() updateUserDto: UpdateUserDto
+  // ) {
+  //   return this.usersService.update(id, updateUserDto);
+  // }
 
-  @UseInterceptors(FileInterceptor("image"))
-  @UseGuards(AuthGuard)
-  @Patch("/changeImage/:userId")
-  changeImage(
-    @Param("userId", ParseIntPipe) id: number,
-    @UploadedFile() file: Express.Multer.File
-  ) {
-    return this.usersService.changeImage(id, file);
-  }
+  // @UseInterceptors(FileInterceptor("image"))
+  // @UseGuards(AuthGuard)
+  // @Patch("/changeImage/:userId")
+  // changeImage(
+  //   @Param("userId", ParseIntPipe) id: number,
+  //   @UploadedFile() file: Express.Multer.File
+  // ) {
+  //   return this.usersService.changeImage(id, file);
+  // }
 }

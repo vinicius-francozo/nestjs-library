@@ -18,10 +18,18 @@ import { CategoryEntity } from "./categories/entities/category.entity";
 import { FavoriteEntity } from "./favorites/entities/favorite.entity";
 import { RentEntity } from "./rents/entities/rent.entity";
 import { ReviewEntity } from "./reviews/entities/review.entity";
-import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { CloudinaryModule } from "./cloudinary/cloudinary.module";
+import { GraphQLModule } from "@nestjs/graphql";
+import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
+import { join } from "path";
 
 @Module({
   imports: [
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), "src/schema.gql"),
+      context: ({ req }) => ({ headers: req.headers }),
+    }),
     ConfigModule.forRoot(),
     AuthModule,
     UsersModule,

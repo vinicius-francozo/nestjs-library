@@ -7,6 +7,7 @@ import { AuthorEntity } from "src/authors/entities/author.entity";
 import { UserEntity } from "src/users/entities/user.entity";
 import { BookEntity } from "src/books/entities/book.entity";
 import { AuthModule } from "src/auth/auth.module";
+import { RentsResolver } from "./rents.resolvers";
 
 @Module({
   imports: [
@@ -19,6 +20,6 @@ import { AuthModule } from "src/auth/auth.module";
     AuthModule,
   ],
   controllers: [RentsController],
-  providers: [RentsService],
+  providers: [RentsService, RentsResolver],
 })
 export class RentsModule {}

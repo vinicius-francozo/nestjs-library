@@ -6,10 +6,15 @@ import { AuthorEntity } from "./entities/author.entity";
 import { UserEntity } from "src/users/entities/user.entity";
 import { AuthModule } from "src/auth/auth.module";
 import { CloudinaryModule } from "src/cloudinary/cloudinary.module";
+import { AuthorsResolver } from "./authors.resolvers";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AuthorEntity, UserEntity]), AuthModule, CloudinaryModule],
+  imports: [
+    TypeOrmModule.forFeature([AuthorEntity, UserEntity]),
+    AuthModule,
+    CloudinaryModule,
+  ],
   controllers: [AuthorsController],
-  providers: [AuthorsService],
+  providers: [AuthorsService, AuthorsResolver],
 })
 export class AuthorsModule {}

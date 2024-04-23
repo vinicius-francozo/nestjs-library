@@ -1,0 +1,201 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type CategoryEntity {
+  id: ID!
+  name: String!
+}
+
+type FavoriteEntity {
+  id: ID!
+  book: BookEntity!
+  user: UserEntity!
+}
+
+type RentEntity {
+  id: ID!
+  status: Float!
+  book: BookEntity!
+  user: UserEntity!
+}
+
+type ReviewEntity {
+  id: ID!
+  text: String!
+  rate: Float!
+  book: BookEntity!
+  user: UserEntity!
+}
+
+type BookEntity {
+  id: ID!
+  title: String!
+  pages: Float!
+  publisher: String!
+  sinopsis: String!
+  edition: String!
+  release_date: String!
+  cover: String!
+  user: UserEntity!
+  author: AuthorEntity!
+  category: CategoryEntity!
+  reviews: [ReviewEntity!]!
+  favorites: [FavoriteEntity!]!
+  rents: [RentEntity!]!
+}
+
+type AuthorEntity {
+  id: ID!
+  name: String!
+  surname: String!
+  description: String!
+  country: String!
+  picture: String!
+  birth_date: String!
+  user: UserEntity!
+  books: [BookEntity!]!
+}
+
+type UserEntity {
+  id: ID!
+  username: String!
+  password: String!
+  email: String!
+  name: String!
+  surname: String!
+  age: Float!
+  phone: String!
+  street: String!
+  city: String!
+  country: String!
+  image: String!
+  isAdmin: Boolean!
+}
+
+type Query {
+  sayHello: String!
+  login(data: AuthLoginDto!): String!
+  findOneUser(id: String!): UserEntity!
+  findAllBooks: [BookEntity!]!
+  bookPerPage(perPage: String!, page: String!): [BookEntity!]!
+  bookByName(name: String!): [BookEntity!]!
+  findOneBook(id: String!): BookEntity!
+  findAllCategories: [CategoryEntity!]!
+  getUserFavorites: [FavoriteEntity!]!
+  getFavoriteByUserAndBookId(bookId: String!): FavoriteEntity!
+  listCheckout: [RentEntity!]!
+  listRentedOrCheckout(bookId: String!): RentEntity!
+  listRents: [RentEntity!]!
+  getUserReviews: [ReviewEntity!]!
+  authorPerPage(perPage: String!, page: String!): [AuthorEntity!]!
+  findOneAuthor(id: String!): AuthorEntity!
+  findAllAuthors: [AuthorEntity!]!
+}
+
+input AuthLoginDto {
+  username: String!
+  password: String!
+}
+
+type Mutation {
+  createUser(data: CreateUserDto!): UserEntity!
+  update(data: UpdateUserDto!): UserEntity!
+  changeImage(image: Upload): UserEntity!
+  createBook(data: CreateBookDto!): BookEntity!
+  deleteBook(id: String!): Boolean!
+  updateBook(id: String!, data: UpdateBookDto!): BookEntity!
+  createCategory(data: CreateCategoryDto!): CategoryEntity!
+  createFavorite(bookId: String!): FavoriteEntity!
+  removeFavorite(bookId: String!): Boolean!
+  createCheckout(bookId: String!): Boolean!
+  confirmPurchase: Boolean!
+  returnBook(id: String!): Boolean!
+  removeBook(id: String!): Boolean!
+  createReview(bookId: String!, data: CreateReviewDto!): ReviewEntity!
+  updateReview(id: String!, data: UpdateReviewDto!): Boolean!
+  deleteReview(id: String!): Boolean!
+  createAuthor(data: CreateAuthorDto!): AuthorEntity!
+  deleteAuthor(id: String!): Boolean!
+  updateAuthor(id: String!, data: UpdateAuthorDto!): AuthorEntity!
+}
+
+input CreateUserDto {
+  username: String!
+  password: String!
+  confirmPassword: String!
+  email: String!
+}
+
+input UpdateUserDto {
+  username: String
+  email: String
+  surname: String
+  age: Float
+  phone: String
+  street: String
+  neighbourhood: String
+  number: String
+  city: String
+  country: String
+  image: Upload
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+input CreateBookDto {
+  title: String!
+  publisher: String!
+  sinopsis: String!
+  edition: String!
+  cover: Upload
+  pages: Float!
+  release_date: String!
+  author_id: Float!
+  category_id: Float!
+}
+
+input UpdateBookDto {
+  title: String
+  publisher: String
+  sinopsis: String
+  edition: String
+  cover: Upload
+  pages: Float
+  release_date: String
+  author_id: Float
+  category_id: Float
+}
+
+input CreateCategoryDto {
+  name: String!
+}
+
+input CreateReviewDto {
+  rate: Float!
+  text: String!
+}
+
+input UpdateReviewDto {
+  rate: Float
+  text: String
+}
+
+input CreateAuthorDto {
+  name: String!
+  surname: String!
+  description: String!
+  country: String!
+  picture: Upload!
+  birth_date: String!
+}
+
+input UpdateAuthorDto {
+  name: String
+  surname: String
+  description: String
+  country: String
+  picture: Upload
+  birth_date: String
+}

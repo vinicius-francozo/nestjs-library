@@ -5,6 +5,7 @@ import { UsersModule } from "src/users/users.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthService } from "./auth.service";
 import { UserEntity } from "src/users/entities/user.entity";
+import { AuthResolver } from "./auth.resolvers";
 require("dotenv").config();
 
 @Module({
@@ -16,7 +17,7 @@ require("dotenv").config();
     TypeOrmModule.forFeature([UserEntity]),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, AuthResolver],
   exports: [AuthService],
 })
 export class AuthModule {}

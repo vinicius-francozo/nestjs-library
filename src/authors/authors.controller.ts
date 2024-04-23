@@ -21,40 +21,43 @@ import { FileInterceptor } from "@nestjs/platform-express";
 @Controller("authors")
 export class AuthorsController {
   constructor(private readonly authorsService: AuthorsService) {}
-  
-  @UseInterceptors(FileInterceptor("picture"))
-  @UseGuards(AuthGuard)
-  @Post()
-  create(  @UploadedFile() file: Express.Multer.File,
-   @Body() createAuthorDto: CreateAuthorDto, @Req() req) {
-    return this.authorsService.create(+req.user.id, createAuthorDto, file);
-  }
 
-  @Get("/perPage")
-  search(@Query() { perPage, page }) {
-    return this.authorsService.searchPaginated(+perPage, +page);
-  }
+  // @UseInterceptors(FileInterceptor("picture"))
+  // @UseGuards(AuthGuard)
+  // @Post()
+  // create(
+  //   @UploadedFile() file: Express.Multer.File,
+  //   @Body() createAuthorDto: CreateAuthorDto,
+  //   @Req() req
+  // ) {
+  //   return this.authorsService.create(+req.user.id, createAuthorDto, file);
+  // }
 
-  @Get()
-  listAll() {
-    return this.authorsService.findAll();
-  }
+  // @Get("/perPage")
+  // search(@Query() { perPage, page }) {
+  //   return this.authorsService.searchPaginated(+perPage, +page);
+  // }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.authorsService.findOne(+id);
-  }
+  // @Get()
+  // listAll() {
+  //   return this.authorsService.findAll();
+  // }
 
-  @UseInterceptors(FileInterceptor("picture"))
-  @UseGuards(AuthGuard)
-  @Put(":id")
-  update(@UploadedFile() file: Express.Multer.File, @Param("id") id: string, @Body() updateAuthorDto: UpdateAuthorDto) {
-    return this.authorsService.update(+id, updateAuthorDto, file);
-  }
+  // @Get(":id")
+  // findOne(@Param("id") id: string) {
+  //   return this.authorsService.findOne(+id);
+  // }
 
-  @UseGuards(AuthGuard)
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.authorsService.remove(+id);
-  }
+  // @UseInterceptors(FileInterceptor("picture"))
+  // @UseGuards(AuthGuard)
+  // @Put(":id")
+  // update(@UploadedFile() file: Express.Multer.File, @Param("id") id: string, @Body() updateAuthorDto: UpdateAuthorDto) {
+  //   return this.authorsService.update(+id, updateAuthorDto, file);
+  // }
+
+  // @UseGuards(AuthGuard)
+  // @Delete(":id")
+  // remove(@Param("id") id: string) {
+  //   return this.authorsService.remove(+id);
+  // }
 }

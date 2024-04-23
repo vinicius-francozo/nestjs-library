@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { CreateFavoriteDto } from "./dto/create-favorite.dto";
 import { FavoriteEntity } from "./entities/favorite.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { BookEntity } from "src/books/entities/book.entity";
-import { UserEntity } from "src/users/entities/user.entity";
 import { Repository } from "typeorm";
+import { BookEntity } from "../books/entities/book.entity";
+import { UserEntity } from "../users/entities/user.entity";
 
 @Injectable()
 export class FavoritesService {
@@ -19,11 +18,7 @@ export class FavoritesService {
     private favoriteRepository: Repository<FavoriteEntity>
   ) {}
 
-  async create(
-    userId: number,
-    bookId: number,
-    createFavoriteDto: CreateFavoriteDto
-  ) {
+  async create(userId: number, bookId: number) {
     let user: UserEntity;
     let book: BookEntity;
 
@@ -35,13 +30,12 @@ export class FavoritesService {
         "Um desses campos não foram encontrados no banco de dados: [Usuário, Livro]"
       );
     }
-    const review = this.favoriteRepository.create({
-      ...createFavoriteDto,
+    const favorite = this.favoriteRepository.create({
       user,
       book,
     });
-    await this.favoriteRepository.save([review]);
-    return review;
+    await this.favoriteRepository.save([favorite]);
+    return favorite;
   }
 
   async getUserFavorites(userId: number) {
@@ -96,8 +90,8 @@ export class FavoritesService {
     }
     const isDeleted = await this.favoriteRepository.delete({ user, book });
     if (isDeleted.affected > 0) {
-      return { message: "favorito deletado com sucesso" };
+      return true;
     }
-    return { message: "favorito não encontrado" };
+    return false;
   }
 }
