@@ -92,6 +92,7 @@ export class BooksService {
       select: {
         category: { id: true, name: true },
         author: { id: true, name: true, surname: true },
+        user: { id: true },
         reviews: {
           text: true,
           rate: true,
@@ -99,7 +100,12 @@ export class BooksService {
           user: { id: true, username: true },
         },
       },
-      relations: { category: true, author: true, reviews: { user: true } },
+      relations: {
+        category: true,
+        author: true,
+        reviews: { user: true },
+        user: true,
+      },
     });
     return book;
   }
@@ -115,7 +121,29 @@ export class BooksService {
   }
 
   async update(id: number, updateBookDto: UpdateBookDto) {
+    let author: AuthorEntity;
+    let category: CategoryEntity;
     const book = await this.bookRepository.findOneBy({ id });
+    if (updateBookDto.author_id) {
+      try {
+        author = await this.authorRepository.findOneByOrFail({
+          id: updateBookDto.author_id,
+        });
+      } catch {
+        throw new NotFoundException("Autor não encontrado");
+      }
+    }
+    if (updateBookDto.category_id) {
+      try {
+        category = await this.categoryRepository.findOneByOrFail({
+          id: updateBookDto.category_id,
+        });
+      } catch {
+        throw new NotFoundException("Categoria não encontrado");
+      }
+    }
+    delete updateBookDto.author_id;
+    delete updateBookDto.category_id;
     if (book) {
       if (updateBookDto.cover) {
         const upfile = await this.cloudinaryService
@@ -127,21 +155,29 @@ export class BooksService {
         await this.bookRepository.update(id, {
           ...updateBookDto,
           cover: upfile.secure_url,
+          author: author ?? book.author,
+          category: category ?? book.category,
         });
 
         return this.bookRepository.create({
           ...updateBookDto,
           cover: upfile.secure_url,
+          author: author ?? book.author,
+          category: category ?? book.category,
         });
       }
       await this.bookRepository.update(id, {
         ...updateBookDto,
         cover: book.cover,
+        author: author ?? book.author,
+        category: category ?? book.category,
       });
 
       return this.bookRepository.create({
         ...updateBookDto,
         cover: book.cover,
+        author: author ?? book.author,
+        category: category ?? book.category,
       });
     }
     throw new NotFoundException("Livro não encontrado");

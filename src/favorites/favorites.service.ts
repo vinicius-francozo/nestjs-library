@@ -35,7 +35,10 @@ export class FavoritesService {
       book,
     });
     await this.favoriteRepository.save([favorite]);
-    return favorite;
+    if (favorite) {
+      return true;
+    }
+    return false;
   }
 
   async getUserFavorites(userId: number) {
@@ -72,7 +75,7 @@ export class FavoritesService {
       );
     }
 
-    const favorite = await this.favoriteRepository.findOneBy({ user, book });
+    const favorite = await this.favoriteRepository.existsBy({ user, book });
     return favorite;
   }
 

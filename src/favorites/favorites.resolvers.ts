@@ -9,7 +9,7 @@ import { UserEntity } from "src/users/entities/user.entity";
 export class FavoritesResolver {
   constructor(private favoritesService: FavoritesService) {}
 
-  @Mutation(() => FavoriteEntity)
+  @Mutation(() => Boolean)
   @UseGuards(AuthGuard)
   createFavorite(
     @Context("user") user: UserEntity,
@@ -33,7 +33,7 @@ export class FavoritesResolver {
     return this.favoritesService.getUserFavorites(+user.id);
   }
 
-  @Query(() => FavoriteEntity)
+  @Query(() => Boolean)
   @UseGuards(AuthGuard)
   getFavoriteByUserAndBookId(
     @Context("user") user: UserEntity,

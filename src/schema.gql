@@ -62,20 +62,26 @@ type UserEntity {
   username: String!
   password: String!
   email: String!
-  name: String!
-  surname: String!
-  age: Float!
-  phone: String!
-  street: String!
-  city: String!
-  country: String!
-  image: String!
-  isAdmin: Boolean!
+  name: String
+  surname: String
+  age: Float
+  phone: String
+  street: String
+  neighbourhood: String
+  number: String
+  city: String
+  country: String
+  image: String
+  isAdmin: Boolean
+  authors: [AuthorEntity!]!
+  books: [BookEntity!]!
+  reviews: [ReviewEntity!]!
+  favorites: [FavoriteEntity!]!
+  rents: [RentEntity!]!
 }
 
 type Query {
   sayHello: String!
-  login(data: AuthLoginDto!): String!
   findOneUser(id: String!): UserEntity!
   findAllBooks: [BookEntity!]!
   bookPerPage(perPage: String!, page: String!): [BookEntity!]!
@@ -83,9 +89,9 @@ type Query {
   findOneBook(id: String!): BookEntity!
   findAllCategories: [CategoryEntity!]!
   getUserFavorites: [FavoriteEntity!]!
-  getFavoriteByUserAndBookId(bookId: String!): FavoriteEntity!
+  getFavoriteByUserAndBookId(bookId: String!): Boolean!
   listCheckout: [RentEntity!]!
-  listRentedOrCheckout(bookId: String!): RentEntity!
+  listRentedOrCheckout(bookId: String!): [RentEntity!]!
   listRents: [RentEntity!]!
   getUserReviews: [ReviewEntity!]!
   authorPerPage(perPage: String!, page: String!): [AuthorEntity!]!
@@ -93,20 +99,16 @@ type Query {
   findAllAuthors: [AuthorEntity!]!
 }
 
-input AuthLoginDto {
-  username: String!
-  password: String!
-}
-
 type Mutation {
+  login(data: AuthLoginDto!): String!
   createUser(data: CreateUserDto!): UserEntity!
-  update(data: UpdateUserDto!): UserEntity!
+  updateUser(data: UpdateUserDto!): UserEntity!
   changeImage(image: Upload): UserEntity!
   createBook(data: CreateBookDto!): BookEntity!
   deleteBook(id: String!): Boolean!
   updateBook(id: String!, data: UpdateBookDto!): BookEntity!
   createCategory(data: CreateCategoryDto!): CategoryEntity!
-  createFavorite(bookId: String!): FavoriteEntity!
+  createFavorite(bookId: String!): Boolean!
   removeFavorite(bookId: String!): Boolean!
   createCheckout(bookId: String!): Boolean!
   confirmPurchase: Boolean!
@@ -120,6 +122,11 @@ type Mutation {
   updateAuthor(id: String!, data: UpdateAuthorDto!): AuthorEntity!
 }
 
+input AuthLoginDto {
+  username: String!
+  password: String!
+}
+
 input CreateUserDto {
   username: String!
   password: String!
@@ -130,6 +137,7 @@ input CreateUserDto {
 input UpdateUserDto {
   username: String
   email: String
+  name: String
   surname: String
   age: Float
   phone: String

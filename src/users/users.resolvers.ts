@@ -24,7 +24,7 @@ export class UsersResolver {
 
   @Mutation(() => UserEntity)
   @UseGuards(AuthGuard)
-  update(
+  updateUser(
     @Context("user") user: UserEntity,
     @Args("data") updateUserDto: UpdateUserDto
   ): Promise<UserEntity> {

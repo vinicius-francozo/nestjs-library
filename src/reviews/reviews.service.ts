@@ -3,7 +3,7 @@ import { CreateReviewDto } from "./dto/create-review.dto";
 import { UpdateReviewDto } from "./dto/update-review.dto";
 import { ReviewEntity } from "./entities/review.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DeleteResult, Repository } from "typeorm";
 import { BookEntity } from "../books/entities/book.entity";
 import { UserEntity } from "../users/entities/user.entity";
 
@@ -67,9 +67,13 @@ export class ReviewsService {
   }
 
   async remove(userId: number, id: number) {
+    let isDeleted: DeleteResult;
     const user = await this.userRepository.findOneBy({ id: userId });
-
-    const isDeleted = await this.reviewRepository.delete({ id, user });
+    if (user.isAdmin) {
+      isDeleted = await this.reviewRepository.delete({ id });
+    } else {
+      isDeleted = await this.reviewRepository.delete({ id, user });
+    }
     if (isDeleted.affected > 0) {
       return true;
     }

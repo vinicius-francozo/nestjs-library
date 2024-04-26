@@ -1,9 +1,9 @@
 import { AuthorEntity } from "@/authors/entities/author.entity";
+import { UserEntity } from "@/users/entities/user.entity";
 import { CategoryEntity } from "@/categories/entities/category.entity";
 import { FavoriteEntity } from "@/favorites/entities/favorite.entity";
 import { RentEntity } from "@/rents/entities/rent.entity";
 import { ReviewEntity } from "@/reviews/entities/review.entity";
-import { UserEntity } from "@/users/entities/user.entity";
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 
 import {

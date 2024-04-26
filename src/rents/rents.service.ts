@@ -50,7 +50,7 @@ export class RentsService {
     return false;
   }
 
-  async listCheckout(userId: number) {
+  async listCheckout(userId: number): Promise<RentEntity[]> {
     let user: UserEntity;
 
     try {
@@ -64,6 +64,7 @@ export class RentsService {
     const rents = await this.rentRepository.find({
       where: { user, status: 0 },
       select: {
+        id: true,
         book: {
           id: true,
           title: true,
@@ -96,6 +97,7 @@ export class RentsService {
         { user, book, status: 1 },
       ],
       select: {
+        id: true,
         book: {
           id: true,
           title: true,
@@ -106,8 +108,7 @@ export class RentsService {
         status: true,
       },
       relations: { book: { author: true } },
-    })[0];
-
+    });
     return rentOrCheckout;
   }
 

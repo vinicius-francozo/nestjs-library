@@ -1,4 +1,4 @@
-import { IsString, IsEmail, IsOptional } from "class-validator";
+import { IsString, IsEmail, IsOptional, IsNumber } from "class-validator";
 import { Field, InputType } from "@nestjs/graphql";
 import { FileUpload } from "graphql-upload-ts";
 import GraphQLUpload from "graphql-upload/GraphQLUpload.js";
@@ -19,9 +19,14 @@ export class UpdateUserDto {
   @IsString()
   @Field({ nullable: true })
   @IsOptional()
-  surname?: string;
+  name?: string;
 
   @IsString()
+  @Field({ nullable: true })
+  @IsOptional()
+  surname?: string;
+
+  @IsNumber()
   @Field({ nullable: true })
   @IsOptional()
   age?: number;

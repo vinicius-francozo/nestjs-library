@@ -38,11 +38,11 @@ export class RentsResolver {
 
   @Query(() => [RentEntity])
   @UseGuards(AuthGuard)
-  listCheckout(@Context("user") user: UserEntity) {
+  listCheckout(@Context("user") user: UserEntity): Promise<RentEntity[]> {
     return this.rentsService.listCheckout(+user.id);
   }
 
-  @Query(() => RentEntity)
+  @Query(() => [RentEntity])
   @UseGuards(AuthGuard)
   listRentedOrCheckout(
     @Context("user") user: UserEntity,
