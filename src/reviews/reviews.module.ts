@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { ReviewsService } from "./reviews.service";
-import { ReviewsController } from "./reviews.controller";
 import { ReviewEntity } from "./entities/review.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "src/auth/auth.module";
@@ -13,7 +12,6 @@ import { ReviewsResolver } from "./reviews.resolvers";
     TypeOrmModule.forFeature([ReviewEntity, UserEntity, BookEntity]),
     AuthModule,
   ],
-  controllers: [ReviewsController],
   providers: [ReviewsService, ReviewsResolver],
 })
 export class ReviewsModule {}

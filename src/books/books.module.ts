@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { BooksService } from "./books.service";
-import { BooksController } from "./books.controller";
 import { BookEntity } from "./entities/book.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CategoryEntity } from "src/categories/entities/category.entity";
@@ -21,7 +20,6 @@ import { BooksResolver } from "./books.resolvers";
     AuthModule,
     CloudinaryModule,
   ],
-  controllers: [BooksController],
   providers: [BooksService, BooksResolver],
 })
 export class BooksModule {}

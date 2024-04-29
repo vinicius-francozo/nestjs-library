@@ -1,6 +1,5 @@
 import { Module } from "@nestjs/common";
 import { RentsService } from "./rents.service";
-import { RentsController } from "./rents.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { RentEntity } from "./entities/rent.entity";
 import { AuthorEntity } from "src/authors/entities/author.entity";
@@ -19,7 +18,6 @@ import { RentsResolver } from "./rents.resolvers";
     ]),
     AuthModule,
   ],
-  controllers: [RentsController],
   providers: [RentsService, RentsResolver],
 })
 export class RentsModule {}

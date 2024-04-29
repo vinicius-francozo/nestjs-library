@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { UploadApiErrorResponse, UploadApiResponse, v2 } from "cloudinary";
-import toStream = require("buffer-to-stream");
 import * as Upload from "graphql-upload/Upload.js";
 
 @Injectable()
