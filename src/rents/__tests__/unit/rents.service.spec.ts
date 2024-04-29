@@ -2,9 +2,9 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { RentsService } from "../../rents.service";
 import { NotFoundException } from "@nestjs/common";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { UserEntity } from "../../../users/entities/user.entity";
-import { RentEntity } from "../../entities/rent.entity";
-import { BookEntity } from "../../../books/entities/book.entity";
+import { UserEntity } from "../../../graphQL/users/types/user.type";
+import { RentEntity } from "../../../graphQL/rents/types/rent.entity";
+import { BookEntity } from "../../../graphQL/books/types/book.type";
 
 describe("RentsService", () => {
   let service: RentsService;

@@ -4,10 +4,10 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from "@nestjs/common";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import { CreateUserDto } from "../graphQL/users/inputs/create-user.input";
+import { UpdateUserDto } from "../graphQL/users/inputs/update-user.input";
 import { Repository } from "typeorm";
-import { UserEntity } from "./entities/user.entity";
+import { UserEntity } from "../graphQL/users/types/user.type";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcrypt";
 import { FileUpload, Upload } from "graphql-upload-ts";

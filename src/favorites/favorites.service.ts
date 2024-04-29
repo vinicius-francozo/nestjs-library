@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { FavoriteEntity } from "./entities/favorite.entity";
+import { FavoriteEntity } from "../graphQL/favorites/types/favorite.type";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { BookEntity } from "../books/entities/book.entity";
-import { UserEntity } from "../users/entities/user.entity";
+import { BookEntity } from "../graphQL/books/types/book.type";
+import { UserEntity } from "../graphQL/users/types/user.type";
 
 @Injectable()
 export class FavoritesService {

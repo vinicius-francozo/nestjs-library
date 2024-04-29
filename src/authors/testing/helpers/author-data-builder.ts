@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { CreateAuthorDto } from "../../dto/create-author.dto";
+import { CreateAuthorDto } from "../../../graphQL/authors/inputs/create-author.input";
 
 type Props = {
   birth_date?: string;

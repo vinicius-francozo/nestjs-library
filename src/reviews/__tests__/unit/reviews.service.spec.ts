@@ -1,9 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ReviewsService } from "../../reviews.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { ReviewEntity } from "../../entities/review.entity";
-import { UserEntity } from "../../../users/entities/user.entity";
-import { BookEntity } from "../../../books/entities/book.entity";
+import { ReviewEntity } from "../../../graphQL/reviews/types/review.type";
+import { UserEntity } from "../../../graphQL/users/types/user.type";
+import { BookEntity } from "../../../graphQL/books/types/book.type";
 import { NotFoundException } from "@nestjs/common";
 import { ReviewDataBuilder } from "../../testing/helpers/review-data-builder";
 

@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { CreateBookDto } from "../../dto/create-book.dto";
+import { CreateBookDto } from "../../../graphQL/books/inputs/create-book.input";
 
 type Props = {
   author_id?: number;

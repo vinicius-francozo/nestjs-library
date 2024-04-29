@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { RentEntity } from "./entities/rent.entity";
-import { AuthorEntity } from "../authors/entities/author.entity";
-import { BookEntity } from "../books/entities/book.entity";
-import { UserEntity } from "../users/entities/user.entity";
+import { RentEntity } from "../graphQL/rents/types/rent.entity";
+import { AuthorEntity } from "../graphQL/authors/types/author.type";
+import { BookEntity } from "../graphQL/books/types/book.type";
+import { UserEntity } from "../graphQL/users/types/user.type";
 
 @Injectable()
 export class RentsService {

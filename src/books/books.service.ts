@@ -3,15 +3,15 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { CreateBookDto } from "./dto/create-book.dto";
-import { UpdateBookDto } from "./dto/update-book.dto";
+import { CreateBookDto } from "../graphQL/books/inputs/create-book.input";
+import { UpdateBookDto } from "../graphQL/books/inputs/update-book.input";
 import { ILike, Repository } from "typeorm";
-import { BookEntity } from "./entities/book.entity";
+import { BookEntity } from "../graphQL/books/types/book.type";
 import { InjectRepository } from "@nestjs/typeorm";
-import { AuthorEntity } from "../authors/entities/author.entity";
-import { CategoryEntity } from "../categories/entities/category.entity";
+import { AuthorEntity } from "../graphQL/authors/types/author.type";
+import { CategoryEntity } from "../graphQL/categories/types/category.type";
 import { CloudinaryService } from "../cloudinary/cloudinary.service";
-import { UserEntity } from "../users/entities/user.entity";
+import { UserEntity } from "../graphQL/users/types/user.type";
 
 @Injectable()
 export class BooksService {

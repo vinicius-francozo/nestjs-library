@@ -3,7 +3,7 @@ import { UsersService } from "../../users.service";
 import { AuthService } from "../../../auth/auth.service";
 import { CloudinaryService } from "../../../cloudinary/cloudinary.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { UserEntity } from "../../entities/user.entity";
+import { UserEntity } from "../../../graphQL/users/types/user.type";
 import { JwtService } from "@nestjs/jwt";
 import { UserDataBuilder } from "../../testing/helpers/user-data-builder";
 import { BadRequestException, NotFoundException } from "@nestjs/common";

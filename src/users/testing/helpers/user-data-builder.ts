@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { UserEntity } from "../../entities/user.entity";
+import { UserEntity } from "../../../graphQL/users/types/user.type";
 
 type Props = {
   name?: string;

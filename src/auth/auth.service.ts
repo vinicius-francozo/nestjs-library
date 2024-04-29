@@ -7,7 +7,7 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
-import { UserEntity } from "../users/entities/user.entity";
+import { UserEntity } from "../graphQL/users/types/user.type";
 require("dotenv").config();
 
 @Injectable()

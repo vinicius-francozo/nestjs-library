@@ -4,13 +4,13 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { CreateAuthorDto } from "./dto/create-author.dto";
-import { UpdateAuthorDto } from "./dto/update-author.dto";
+import { CreateAuthorDto } from "../graphQL/authors/inputs/create-author.input";
+import { UpdateAuthorDto } from "../graphQL/authors/inputs/update-author.input";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, ILike } from "typeorm";
-import { AuthorEntity } from "./entities/author.entity";
+import { AuthorEntity } from "../graphQL/authors/types/author.type";
 import { CloudinaryService } from "../cloudinary/cloudinary.service";
-import { UserEntity } from "../users/entities/user.entity";
+import { UserEntity } from "../graphQL/users/types/user.type";
 
 @Injectable()
 export class AuthorsService {

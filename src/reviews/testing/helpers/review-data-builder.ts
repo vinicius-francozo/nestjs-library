@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
-import { ReviewEntity } from "../../entities/review.entity";
-import { BookEntity } from "../../../books/entities/book.entity";
-import { UserEntity } from "../../../users/entities/user.entity";
+import { ReviewEntity } from "../../../graphQL/reviews/types/review.type";
+import { BookEntity } from "../../../graphQL/books/types/book.type";
+import { UserEntity } from "../../../graphQL/users/types/user.type";
 
 type Props = {
   id?: string;

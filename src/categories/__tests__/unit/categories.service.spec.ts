@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CategoriesService } from "../../categories.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { CategoryEntity } from "../../entities/category.entity";
+import { CategoryEntity } from "../../../graphQL/categories/types/category.type";
 
 describe("CategoriesService", () => {
   let service: CategoriesService;

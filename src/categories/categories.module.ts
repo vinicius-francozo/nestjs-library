@@ -1,10 +1,9 @@
 import { Module } from "@nestjs/common";
 import { CategoriesService } from "./categories.service";
-import { CategoryEntity } from "./entities/category.entity";
+import { CategoryEntity } from "../graphQL/categories/types/category.type";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "src/auth/auth.module";
-import { UsersResolver } from "src/users/users.resolvers";
-import { CategoriesResolver } from "./categories.resolvers";
+import { CategoriesResolver } from "../graphQL/categories/resolver/categories.resolvers";
 
 @Module({
   imports: [TypeOrmModule.forFeature([CategoryEntity]), AuthModule],

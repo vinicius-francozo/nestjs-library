@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
 import { ReviewsService } from "./reviews.service";
-import { ReviewEntity } from "./entities/review.entity";
+import { ReviewEntity } from "../graphQL/reviews/types/review.type";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "src/auth/auth.module";
-import { UserEntity } from "src/users/entities/user.entity";
-import { BookEntity } from "src/books/entities/book.entity";
-import { ReviewsResolver } from "./reviews.resolvers";
+import { ReviewsResolver } from "../graphQL/reviews/resolver/reviews.resolvers";
+import { BookEntity } from "../graphQL/books/types/book.type";
+import { UserEntity } from "../graphQL/users/types/user.type";
 
 @Module({
   imports: [

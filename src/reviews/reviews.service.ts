@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { CreateReviewDto } from "./dto/create-review.dto";
-import { UpdateReviewDto } from "./dto/update-review.dto";
-import { ReviewEntity } from "./entities/review.entity";
+import { CreateReviewDto } from "../graphQL/reviews/inputs/create-review.input";
+import { UpdateReviewDto } from "../graphQL/reviews/inputs/update-review.input";
+import { ReviewEntity } from "../graphQL/reviews/types/review.type";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DeleteResult, Repository } from "typeorm";
-import { BookEntity } from "../books/entities/book.entity";
-import { UserEntity } from "../users/entities/user.entity";
+import { BookEntity } from "../graphQL/books/types/book.type";
+import { UserEntity } from "../graphQL/users/types/user.type";
 
 @Injectable()
 export class ReviewsService {

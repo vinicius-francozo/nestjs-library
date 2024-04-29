@@ -1,9 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { FavoritesService } from "../../favorites.service";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { BookEntity } from "../../../books/entities/book.entity";
-import { UserEntity } from "../../../users/entities/user.entity";
-import { FavoriteEntity } from "../../entities/favorite.entity";
+import { BookEntity } from "../../../graphQL/books/types/book.type";
+import { UserEntity } from "../../../graphQL/users/types/user.type";
+import { FavoriteEntity } from "../../../graphQL/favorites/types/favorite.type";
 import { NotFoundException } from "@nestjs/common";
 
 describe("FavoritesService", () => {

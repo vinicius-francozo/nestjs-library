@@ -2,7 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { AuthService } from "../../auth.service";
 import { JwtService } from "@nestjs/jwt";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { UserEntity } from "../../../users/entities/user.entity";
+import { UserEntity } from "../../../graphQL/users/types/user.type";
 
 describe("AuthService", () => {
   let service: AuthService;
