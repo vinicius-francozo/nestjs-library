@@ -1,6 +1,5 @@
 import { Module, forwardRef } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
-import { AuthController } from "./auth.controller";
 import { UsersModule } from "src/users/users.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthService } from "./auth.service";
@@ -16,7 +15,6 @@ require("dotenv").config();
     forwardRef(() => UsersModule),
     TypeOrmModule.forFeature([UserEntity]),
   ],
-  controllers: [AuthController],
   providers: [AuthService, AuthResolver],
   exports: [AuthService],
 })
