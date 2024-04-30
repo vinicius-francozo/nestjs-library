@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { CreateBookDto } from "../../../graphQL/books/inputs/create-book.input";
+import { CreateBookInput } from "../../../graphQL/books/inputs/create-book.input";
 
 type Props = {
   author_id?: number;
@@ -13,7 +13,7 @@ type Props = {
   title?: string;
 };
 
-export function BookDataBuilder(props: Props): CreateBookDto {
+export function BookDataBuilder(props: Props): CreateBookInput {
   return {
     author_id: props.author_id ?? faker.number.int(),
     category_id: props.category_id ?? faker.number.int(),

@@ -30,7 +30,7 @@ describe("CategoriesService", () => {
 
   describe("create function", () => {
     it("should create a category", async () => {
-      const response = await service.create({ name: "test" });
+      const response: CategoryEntity = await service.create({ name: "test" });
 
       expect(response).toBeInstanceOf(CategoryEntity);
     });
@@ -38,7 +38,7 @@ describe("CategoriesService", () => {
 
   describe("findall function", () => {
     it("should return all the categories", async () => {
-      const response = await service.findAll();
+      const response: CategoryEntity[] = await service.findAll();
 
       expect(response).toStrictEqual([new CategoryEntity()]);
     });

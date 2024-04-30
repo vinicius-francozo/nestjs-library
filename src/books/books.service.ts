@@ -3,15 +3,16 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { CreateBookDto } from "../graphQL/books/inputs/create-book.input";
-import { UpdateBookDto } from "../graphQL/books/inputs/update-book.input";
-import { ILike, Repository } from "typeorm";
+import { CreateBookInput } from "../graphQL/books/inputs/create-book.input";
+import { UpdateBookInput } from "../graphQL/books/inputs/update-book.input";
+import { DeleteResult, ILike, Repository } from "typeorm";
 import { BookEntity } from "../graphQL/books/types/book.type";
 import { InjectRepository } from "@nestjs/typeorm";
 import { AuthorEntity } from "../graphQL/authors/types/author.type";
 import { CategoryEntity } from "../graphQL/categories/types/category.type";
 import { CloudinaryService } from "../cloudinary/cloudinary.service";
 import { UserEntity } from "../graphQL/users/types/user.type";
+import { UploadApiErrorResponse, UploadApiResponse } from "cloudinary";
 
 @Injectable()
 export class BooksService {
@@ -31,7 +32,7 @@ export class BooksService {
     private readonly cloudinaryService: CloudinaryService
   ) {}
 
-  async create(userId: number, createBookDto: CreateBookDto) {
+  async create(userId: number, createBookDto: CreateBookInput) {
     let user: UserEntity;
     let author: AuthorEntity;
     let category: CategoryEntity;
@@ -50,13 +51,14 @@ export class BooksService {
       );
     }
 
-    const upfile = await this.cloudinaryService
-      .uploadImage(await createBookDto.cover)
-      .catch(() => {
-        throw new BadRequestException("Invalid file type.");
-      });
+    const upfile: UploadApiResponse | UploadApiErrorResponse =
+      await this.cloudinaryService
+        .uploadImage(await createBookDto.cover)
+        .catch(() => {
+          throw new BadRequestException("Invalid file type.");
+        });
 
-    const book = this.bookRepository.create({
+    const book: BookEntity = this.bookRepository.create({
       ...createBookDto,
       cover: upfile.secure_url,
       author,
@@ -68,7 +70,7 @@ export class BooksService {
   }
 
   async searchPaginated(perPage: number, page: number) {
-    const books = await this.bookRepository.find({
+    const books: BookEntity[] = await this.bookRepository.find({
       skip: page > 0 ? (page - 1) * perPage : 1,
       take: perPage > 0 ? perPage : 15,
       relations: { category: true, author: true },
@@ -78,7 +80,7 @@ export class BooksService {
   }
 
   async findAll(): Promise<BookEntity[]> {
-    const books = await this.bookRepository.find({
+    const books: BookEntity[] = await this.bookRepository.find({
       select: { author: { id: true, name: true, surname: true } },
       relations: { category: true, author: true },
     });
@@ -87,7 +89,7 @@ export class BooksService {
   }
 
   async findOne(id: number) {
-    const book = await this.bookRepository.findOne({
+    const book: BookEntity = await this.bookRepository.findOne({
       where: { id },
       select: {
         category: { id: true, name: true },
@@ -111,19 +113,19 @@ export class BooksService {
   }
 
   async listByName(name: string) {
-    const book = await this.bookRepository.find({
+    const books: BookEntity[] = await this.bookRepository.find({
       where: { title: ILike(`%${name}%`) },
       select: { author: { id: true, name: true, surname: true } },
       relations: { category: true, author: true },
     });
 
-    return book;
+    return books;
   }
 
-  async update(id: number, updateBookDto: UpdateBookDto) {
+  async update(id: number, updateBookDto: UpdateBookInput) {
     let author: AuthorEntity;
     let category: CategoryEntity;
-    const book = await this.bookRepository.findOneBy({ id });
+    const book: BookEntity = await this.bookRepository.findOneBy({ id });
     if (updateBookDto.author_id) {
       try {
         author = await this.authorRepository.findOneByOrFail({
@@ -146,11 +148,12 @@ export class BooksService {
     delete updateBookDto.category_id;
     if (book) {
       if (updateBookDto.cover) {
-        const upfile = await this.cloudinaryService
-          .uploadImage(await updateBookDto.cover)
-          .catch(() => {
-            throw new BadRequestException("Invalid file type.");
-          });
+        const upfile: UploadApiResponse | UploadApiErrorResponse =
+          await this.cloudinaryService
+            .uploadImage(await updateBookDto.cover)
+            .catch(() => {
+              throw new BadRequestException("Invalid file type.");
+            });
 
         await this.bookRepository.update(id, {
           ...updateBookDto,
@@ -184,7 +187,7 @@ export class BooksService {
   }
 
   async remove(id: number): Promise<boolean> {
-    const isDeleted = await this.bookRepository.delete(id);
+    const isDeleted: DeleteResult = await this.bookRepository.delete(id);
     if (isDeleted.affected > 0) {
       return true;
     }

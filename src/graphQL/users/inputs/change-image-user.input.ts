@@ -1,6 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 
-export class ChangeImageUserDto {
+export class ChangeImageUserInput {
   @IsNotEmpty()
   image: string;
 }

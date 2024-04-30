@@ -1,11 +1,11 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { CreateAuthorDto } from "./create-author.input";
+import { CreateAuthorInput } from "./create-author.input";
 import { IsOptional, IsString, Validate } from "class-validator";
 import { FileUpload } from "graphql-upload-ts";
 import { Field, InputType } from "@nestjs/graphql";
 import GraphQLUpload from "graphql-upload/GraphQLUpload.js";
 @InputType()
-export class UpdateAuthorDto extends PartialType(CreateAuthorDto) {
+export class UpdateAuthorInput extends PartialType(CreateAuthorInput) {
   @IsString()
   @IsOptional()
   @Field({ nullable: true })

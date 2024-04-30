@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { CreateReviewDto } from "../graphQL/reviews/inputs/create-review.input";
-import { UpdateReviewDto } from "../graphQL/reviews/inputs/update-review.input";
+
 import { ReviewEntity } from "../graphQL/reviews/types/review.type";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeleteResult, Repository } from "typeorm";
+import { DeleteResult, Repository, UpdateResult } from "typeorm";
 import { BookEntity } from "../graphQL/books/types/book.type";
 import { UserEntity } from "../graphQL/users/types/user.type";
+import { CreateReviewInput } from "../graphQL/reviews/inputs/create-review.input";
+import { UpdateReviewInput } from "../graphQL/reviews/inputs/update-review.input";
 
 @Injectable()
 export class ReviewsService {
@@ -23,7 +24,7 @@ export class ReviewsService {
   async create(
     userId: number,
     bookId: number,
-    createReviewDto: CreateReviewDto
+    createReviewInput: CreateReviewInput
   ) {
     let user: UserEntity;
     let book: BookEntity;
@@ -36,8 +37,8 @@ export class ReviewsService {
         "Um desses campos não foram encontrados no banco de dados: [Usuário, Livro]"
       );
     }
-    const review = this.reviewRepository.create({
-      ...createReviewDto,
+    const review: ReviewEntity = this.reviewRepository.create({
+      ...createReviewInput,
       user,
       book,
     });
@@ -46,8 +47,10 @@ export class ReviewsService {
   }
 
   async getUserReviews(userId: number) {
-    const user = await this.userRepository.findOneBy({ id: userId });
-    const reviews = await this.reviewRepository.find({
+    const user: UserEntity = await this.userRepository.findOneBy({
+      id: userId,
+    });
+    const reviews: ReviewEntity[] = await this.reviewRepository.find({
       where: { user },
     });
     return reviews;
@@ -56,19 +59,23 @@ export class ReviewsService {
   async update(
     userId: number,
     id: number,
-    updateReviewDto: UpdateReviewDto
+    updateReviewInput: UpdateReviewInput
   ): Promise<boolean> {
-    const user = await this.userRepository.findOneBy({ id: userId });
-    const isUpdated = await this.reviewRepository.update(
+    const user: UserEntity = await this.userRepository.findOneBy({
+      id: userId,
+    });
+    const isUpdated: UpdateResult = await this.reviewRepository.update(
       { id, user },
-      updateReviewDto
+      updateReviewInput
     );
     return isUpdated.affected > 0;
   }
 
   async remove(userId: number, id: number) {
     let isDeleted: DeleteResult;
-    const user = await this.userRepository.findOneBy({ id: userId });
+    const user: UserEntity = await this.userRepository.findOneBy({
+      id: userId,
+    });
     if (user.isAdmin) {
       isDeleted = await this.reviewRepository.delete({ id });
     } else {

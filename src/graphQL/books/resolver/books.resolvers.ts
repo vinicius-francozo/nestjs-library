@@ -1,11 +1,11 @@
 import { Args, Mutation, Resolver, Query, Context } from "@nestjs/graphql";
 import { BooksService } from "../../../books/books.service";
 import { BookEntity } from "../types/book.type";
-import { CreateBookDto } from "../inputs/create-book.input";
-import { UpdateBookDto } from "../inputs/update-book.input";
 import { UseGuards } from "@nestjs/common";
 import { AuthGuard } from "src/auth/auth.guard";
 import { UserEntity } from "../../users/types/user.type";
+import { CreateBookArgs } from "../args/create-book.args";
+import { UpdateBookArgs } from "../args/update-book.args";
 
 @Resolver("books")
 export class BooksResolver {
@@ -15,9 +15,9 @@ export class BooksResolver {
   @UseGuards(AuthGuard)
   createBook(
     @Context("user") user: UserEntity,
-    @Args("data") createBookDto: CreateBookDto
+    @Args() { data }: CreateBookArgs
   ) {
-    return this.booksService.create(+user.id, createBookDto);
+    return this.booksService.create(+user.id, data);
   }
 
   @Mutation(() => Boolean)
@@ -28,11 +28,8 @@ export class BooksResolver {
 
   @Mutation(() => BookEntity)
   @UseGuards(AuthGuard)
-  updateBook(
-    @Args("id") id: string,
-    @Args("data") updateBookDto: UpdateBookDto
-  ) {
-    return this.booksService.update(+id, updateBookDto);
+  updateBook(@Args("id") id: string, @Args() { data }: UpdateBookArgs) {
+    return this.booksService.update(+id, data);
   }
 
   @Query(() => [BookEntity])

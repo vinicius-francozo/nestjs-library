@@ -4,13 +4,14 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { CreateAuthorDto } from "../graphQL/authors/inputs/create-author.input";
-import { UpdateAuthorDto } from "../graphQL/authors/inputs/update-author.input";
+import { UpdateAuthorInput } from "../graphQL/authors/inputs/update-author.input";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, ILike } from "typeorm";
+import { Repository, ILike, DeleteResult } from "typeorm";
 import { AuthorEntity } from "../graphQL/authors/types/author.type";
 import { CloudinaryService } from "../cloudinary/cloudinary.service";
 import { UserEntity } from "../graphQL/users/types/user.type";
+import { UploadApiResponse, UploadApiErrorResponse } from "cloudinary";
+import { CreateAuthorInput } from "../graphQL/authors/inputs/create-author.input";
 
 @Injectable()
 export class AuthorsService {
@@ -24,7 +25,7 @@ export class AuthorsService {
     private readonly cloudinaryService: CloudinaryService
   ) {}
 
-  async create(userId: number, createAuthorDto: CreateAuthorDto) {
+  async create(userId: number, createAuthorDto: CreateAuthorInput) {
     let user: UserEntity;
 
     try {
@@ -35,20 +36,20 @@ export class AuthorsService {
       );
     }
 
-    const authorExists = await this.authorRepository.existsBy({
+    const authorExists: boolean = await this.authorRepository.existsBy({
       name: createAuthorDto.name,
       surname: createAuthorDto.surname,
     });
 
     if (!authorExists) {
-      const upfile = await this.cloudinaryService
-        .uploadImage(await createAuthorDto.picture)
-        .catch(() => {
-          throw new BadRequestException("Invalid file type.");
-        });
+      const upfile: UploadApiResponse | UploadApiErrorResponse =
+        await this.cloudinaryService
+          .uploadImage(await createAuthorDto.picture)
+          .catch(() => {
+            throw new BadRequestException("Invalid file type.");
+          });
 
-      const dateParts = createAuthorDto.birth_date.split("/");
-      const author = this.authorRepository.create({
+      const author: AuthorEntity = this.authorRepository.create({
         ...createAuthorDto,
         picture: upfile.secure_url,
         user,
@@ -60,7 +61,7 @@ export class AuthorsService {
   }
 
   async searchPaginated(perPage: number, page: number) {
-    const authors = await this.authorRepository.find({
+    const authors: AuthorEntity[] = await this.authorRepository.find({
       skip: page > 0 ? (page - 1) * perPage : 1,
       take: perPage > 0 ? perPage : 15,
       select: { user: { id: true } },
@@ -71,7 +72,7 @@ export class AuthorsService {
   }
 
   async findAll() {
-    const authors = await this.authorRepository.find({
+    const authors: AuthorEntity[] = await this.authorRepository.find({
       select: { user: { id: true } },
       relations: { user: true },
     });
@@ -80,7 +81,7 @@ export class AuthorsService {
   }
 
   async findOne(id: number) {
-    const author = await this.authorRepository.findOne({
+    const author: AuthorEntity = await this.authorRepository.findOne({
       where: { id },
       select: { user: { id: true } },
       relations: { user: true },
@@ -89,8 +90,8 @@ export class AuthorsService {
     return author;
   }
 
-  async update(id: number, updateAuthorDto: UpdateAuthorDto) {
-    const author = await this.authorRepository.findOneBy({ id });
+  async update(id: number, updateAuthorDto: UpdateAuthorInput) {
+    const author: AuthorEntity = await this.authorRepository.findOneBy({ id });
     if (author) {
       if (updateAuthorDto.picture) {
         const upfile = await this.cloudinaryService
@@ -123,7 +124,7 @@ export class AuthorsService {
   }
 
   async remove(id: number): Promise<boolean> {
-    const isDeleted = await this.authorRepository.delete(id);
+    const isDeleted: DeleteResult = await this.authorRepository.delete(id);
     if (isDeleted.affected > 0) {
       return true;
     }

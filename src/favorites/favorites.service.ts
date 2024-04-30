@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { FavoriteEntity } from "../graphQL/favorites/types/favorite.type";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DeleteResult, Repository } from "typeorm";
 import { BookEntity } from "../graphQL/books/types/book.type";
 import { UserEntity } from "../graphQL/users/types/user.type";
 
@@ -30,7 +30,7 @@ export class FavoritesService {
         "Um desses campos não foram encontrados no banco de dados: [Usuário, Livro]"
       );
     }
-    const favorite = this.favoriteRepository.create({
+    const favorite: FavoriteEntity = this.favoriteRepository.create({
       user,
       book,
     });
@@ -51,7 +51,7 @@ export class FavoritesService {
       );
     }
 
-    const favorites = await this.favoriteRepository.find({
+    const favorites: FavoriteEntity[] = await this.favoriteRepository.find({
       where: { user },
       select: {
         book: { id: true, title: true, cover: true, author: { name: true } },
@@ -75,7 +75,10 @@ export class FavoritesService {
       );
     }
 
-    const favorite = await this.favoriteRepository.existsBy({ user, book });
+    const favorite: boolean = await this.favoriteRepository.existsBy({
+      user,
+      book,
+    });
     return favorite;
   }
 
@@ -91,7 +94,10 @@ export class FavoritesService {
         "Um desses campos não foram encontrados no banco de dados: [Usuário, Livro]"
       );
     }
-    const isDeleted = await this.favoriteRepository.delete({ user, book });
+    const isDeleted: DeleteResult = await this.favoriteRepository.delete({
+      user,
+      book,
+    });
     if (isDeleted.affected > 0) {
       return true;
     }

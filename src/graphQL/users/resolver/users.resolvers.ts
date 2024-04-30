@@ -1,19 +1,20 @@
 import { Args, Mutation, Resolver, Query, Context } from "@nestjs/graphql";
 import { UsersService } from "../../../users/users.service";
-import { CreateUserDto } from "../inputs/create-user.input";
 import { UserEntity } from "../types/user.type";
 import GraphQLUpload from "graphql-upload/GraphQLUpload.js";
-import { UpdateUserDto } from "../inputs/update-user.input";
 import { FileUpload } from "graphql-upload-ts";
 import { UseGuards } from "@nestjs/common";
 import { AuthGuard } from "src/auth/auth.guard";
+import { CreateUserArgs } from "../args/create-user.args";
+import { UpdateUserArgs } from "../args/update-user.args";
 
 @Resolver("users")
 export class UsersResolver {
   constructor(private usersService: UsersService) {}
 
   @Mutation(() => UserEntity)
-  createUser(@Args("data") data: CreateUserDto): Promise<UserEntity> {
+  createUser(@Args() { data }: CreateUserArgs): Promise<UserEntity> {
+    console.log(data);
     return this.usersService.create(data);
   }
 
@@ -26,9 +27,9 @@ export class UsersResolver {
   @UseGuards(AuthGuard)
   updateUser(
     @Context("user") user: UserEntity,
-    @Args("data") updateUserDto: UpdateUserDto
+    @Args() { data }: UpdateUserArgs
   ): Promise<UserEntity> {
-    return this.usersService.update(+user.id, updateUserDto);
+    return this.usersService.update(+user.id, data);
   }
 
   @Mutation(() => UserEntity)

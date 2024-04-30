@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CloudinaryService } from "../../cloudinary.service";
-import { UploadApiResponse } from "cloudinary";
+import { UploadApiErrorResponse, UploadApiResponse } from "cloudinary";
 
 describe("CloudinaryService", () => {
   let service: CloudinaryService;
@@ -21,7 +21,8 @@ describe("CloudinaryService", () => {
     jest
       .spyOn(service, "uploadImage")
       .mockResolvedValueOnce({} as UploadApiResponse);
-    const response = await service.uploadImage("someimage");
+    const response: UploadApiResponse | UploadApiErrorResponse =
+      await service.uploadImage("someimage");
 
     expect(response).toMatchObject<UploadApiResponse>;
   });

@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { CreateAuthorDto } from "../../../graphQL/authors/inputs/create-author.input";
+import { CreateAuthorInput } from "../../../graphQL/authors/inputs/create-author.input";
 
 type Props = {
   birth_date?: string;
@@ -10,7 +10,7 @@ type Props = {
   picture?: string;
 };
 
-export function AuthorDataBuilder(props: Props): CreateAuthorDto {
+export function AuthorDataBuilder(props: Props): CreateAuthorInput {
   return {
     birth_date: props.birth_date ?? faker.string.alpha(),
     country: props.country ?? faker.string.alpha(),

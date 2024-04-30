@@ -64,7 +64,11 @@ describe("ReviewsService", () => {
 
   describe("create function", () => {
     it("should create a review", async () => {
-      const response = await service.create(1, 1, ReviewDataBuilder({}));
+      const response: ReviewEntity = await service.create(
+        1,
+        1,
+        ReviewDataBuilder({})
+      );
 
       expect(response).toBeInstanceOf(ReviewEntity);
     });
@@ -92,7 +96,7 @@ describe("ReviewsService", () => {
 
   describe("getUserReviews function", () => {
     it("should find the user reviews", async () => {
-      const response = await service.getUserReviews(1);
+      const response: ReviewEntity[] = await service.getUserReviews(1);
 
       expect(response).toStrictEqual([new ReviewEntity()]);
     });
@@ -100,7 +104,7 @@ describe("ReviewsService", () => {
     it("should should not find the reviews because the user doesnt exist (mocked by userId === 0)", async () => {
       jest.spyOn(service, "getUserReviews").mockResolvedValueOnce([]);
 
-      const response = await service.getUserReviews(0);
+      const response: ReviewEntity[] = await service.getUserReviews(0);
 
       expect(response).toStrictEqual([]);
     });
@@ -109,13 +113,21 @@ describe("ReviewsService", () => {
   describe("update function", () => {
     it("should update a review", async () => {
       jest.spyOn(service, "update").mockResolvedValueOnce(true);
-      const response = await service.update(1, 1, ReviewDataBuilder({}));
+      const response: boolean = await service.update(
+        1,
+        1,
+        ReviewDataBuilder({})
+      );
 
       expect(response).toBe(true);
     });
 
     it("should not update a review because the review doesnt exist (mocked by reviewId === 0)", async () => {
-      const response = await service.update(1, 0, ReviewDataBuilder({}));
+      const response: boolean = await service.update(
+        1,
+        0,
+        ReviewDataBuilder({})
+      );
 
       expect(response).toBe(false);
     });
@@ -124,13 +136,13 @@ describe("ReviewsService", () => {
   describe("remove function", () => {
     it("should remove a review", async () => {
       jest.spyOn(service, "remove").mockResolvedValueOnce(true);
-      const response = await service.remove(1, 1);
+      const response: boolean = await service.remove(1, 1);
 
       expect(response).toBe(true);
     });
 
     it("should not remove a review because the review doesnt exist (mocked by reviewId === 0)", async () => {
-      const response = await service.remove(1, 0);
+      const response: boolean = await service.remove(1, 0);
 
       expect(response).toBe(false);
     });

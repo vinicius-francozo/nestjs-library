@@ -53,7 +53,7 @@ describe("UsersService", () => {
 
   describe("create function", () => {
     it("should create an user", async () => {
-      const response = await service.create({
+      const response: UserEntity = await service.create({
         username: "test",
         password: "123456",
         confirmPassword: "123456",
@@ -77,12 +77,12 @@ describe("UsersService", () => {
 
   describe("findOne function", () => {
     it("should find a user by id (mocked by userId == 1)", async () => {
-      const response = await service.findOne(1);
+      const response: UserEntity = await service.findOne(1);
       expect(response).toBeInstanceOf(UserEntity);
     });
 
     it("should not find a user because the user doesn't exist (mocked by userId === 0)", async () => {
-      const response = await service.findOne(0);
+      const response: UserEntity = await service.findOne(0);
       expect(response).toBeInstanceOf(NotFoundException);
     });
   });
@@ -90,7 +90,7 @@ describe("UsersService", () => {
   describe("update function", () => {
     it("should find a user by id and update (mocked by userId == 1)", async () => {
       jest.spyOn(service, "update").mockResolvedValueOnce(new UserEntity());
-      const response = await service.update(1, props as any);
+      const response: UserEntity = await service.update(1, props as any);
 
       expect(response).toBeInstanceOf(UserEntity);
     });
@@ -107,7 +107,7 @@ describe("UsersService", () => {
       jest
         .spyOn(service, "changeImage")
         .mockResolvedValueOnce(new UserEntity());
-      const response = await service.changeImage(1, props as any);
+      const response: UserEntity = await service.changeImage(1, props as any);
 
       expect(response).toBeInstanceOf(UserEntity);
     });

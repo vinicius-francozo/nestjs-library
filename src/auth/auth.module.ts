@@ -3,8 +3,8 @@ import { JwtModule } from "@nestjs/jwt";
 import { UsersModule } from "src/users/users.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthService } from "./auth.service";
-import { AuthResolver } from "../graphQL/auth/resolver/auth.resolvers";
 import { UserEntity } from "../graphQL/users/types/user.type";
+import { AuthResolver } from "../graphQL/auth/resolver/auth.resolvers";
 require("dotenv").config();
 
 @Module({

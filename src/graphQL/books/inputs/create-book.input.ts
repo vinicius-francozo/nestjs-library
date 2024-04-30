@@ -1,15 +1,9 @@
 import { Field, InputType } from "@nestjs/graphql";
-import {
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { FileUpload } from "graphql-upload-ts";
 import GraphQLUpload from "graphql-upload/GraphQLUpload.js";
 @InputType()
-export class CreateBookDto {
+export class CreateBookInput {
   @IsString()
   @IsNotEmpty()
   @Field()

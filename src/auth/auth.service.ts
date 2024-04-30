@@ -34,7 +34,7 @@ export class AuthService {
 
   async login(username: string, password: string) {
     try {
-      const user = await this.userRepository.findOneByOrFail({
+      const user: UserEntity = await this.userRepository.findOneByOrFail({
         username,
       });
 

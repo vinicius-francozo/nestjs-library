@@ -7,7 +7,7 @@ import {
 } from "class-validator";
 
 @InputType()
-export class CreateUserDto {
+export class CreateUserInput {
   @IsString()
   @Field()
   @IsNotEmpty()

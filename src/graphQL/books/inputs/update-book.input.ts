@@ -1,17 +1,9 @@
-import { PartialType } from "@nestjs/mapped-types";
-import { CreateBookDto } from "./create-book.input";
 import { Field, InputType } from "@nestjs/graphql";
-import {
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 import { FileUpload } from "graphql-upload-ts";
 import GraphQLUpload from "graphql-upload/GraphQLUpload.js";
 @InputType()
-export class UpdateBookDto {
+export class UpdateBookInput {
   @IsString()
   @IsOptional()
   @Field({ nullable: true })

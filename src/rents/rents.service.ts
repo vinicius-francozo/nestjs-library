@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DeleteResult, Repository, UpdateResult } from "typeorm";
 import { RentEntity } from "../graphQL/rents/types/rent.entity";
 import { AuthorEntity } from "../graphQL/authors/types/author.type";
 import { BookEntity } from "../graphQL/books/types/book.type";
@@ -39,7 +39,7 @@ export class RentsService {
       );
     }
     if (!rented) {
-      const rent = this.rentRepository.create({
+      const rent: RentEntity = this.rentRepository.create({
         book,
         user,
       });
@@ -61,7 +61,7 @@ export class RentsService {
       );
     }
 
-    const rents = await this.rentRepository.find({
+    const rents: RentEntity[] = await this.rentRepository.find({
       where: { user, status: 0 },
       select: {
         id: true,
@@ -91,7 +91,7 @@ export class RentsService {
       );
     }
 
-    const rentOrCheckout = await this.rentRepository.find({
+    const rentOrCheckout: RentEntity[] = await this.rentRepository.find({
       where: [
         { user, book, status: 0 },
         { user, book, status: 1 },
@@ -136,7 +136,7 @@ export class RentsService {
       );
     }
 
-    const rent = await this.rentRepository.find({
+    const rent: RentEntity[] = await this.rentRepository.find({
       where: { user, status: 1 },
       select: {
         book: {
@@ -163,7 +163,7 @@ export class RentsService {
       );
     }
 
-    const returnedBook = await this.rentRepository.update(
+    const returnedBook: UpdateResult = await this.rentRepository.update(
       { id: rentId, user, status: 1 },
       { status: 2 }
     );
@@ -184,7 +184,7 @@ export class RentsService {
       );
     }
 
-    const isDeleted = await this.rentRepository.delete({
+    const isDeleted: DeleteResult = await this.rentRepository.delete({
       user,
       id: rentId,
       status: 0,

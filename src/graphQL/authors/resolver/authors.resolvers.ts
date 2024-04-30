@@ -1,11 +1,11 @@
 import { Args, Mutation, Resolver, Query, Context } from "@nestjs/graphql";
 import { AuthorEntity } from "../types/author.type";
-import { CreateAuthorDto } from "../inputs/create-author.input";
 import { AuthorsService } from "../../../authors/authors.service";
-import { UpdateAuthorDto } from "../inputs/update-author.input";
 import { UseGuards } from "@nestjs/common";
 import { AuthGuard } from "src/auth/auth.guard";
 import { UserEntity } from "../../users/types/user.type";
+import { CreateAuthorArgs } from "../args/create-author.args";
+import { UpdateAuthorArgs } from "../args/update-author.args";
 
 @Resolver("authors")
 export class AuthorsResolver {
@@ -15,9 +15,9 @@ export class AuthorsResolver {
   @Mutation(() => AuthorEntity)
   createAuthor(
     @Context("user") user: UserEntity,
-    @Args("data") createAuthorDto: CreateAuthorDto
+    @Args() { data }: CreateAuthorArgs
   ): Promise<AuthorEntity> {
-    return this.authorsService.create(+user.id, createAuthorDto);
+    return this.authorsService.create(+user.id, data);
   }
 
   @UseGuards(AuthGuard)
@@ -30,9 +30,9 @@ export class AuthorsResolver {
   @Mutation(() => AuthorEntity)
   updateAuthor(
     @Args("id") id: string,
-    @Args("data") updateAuthorDto: UpdateAuthorDto
+    @Args() { data }: UpdateAuthorArgs
   ): Promise<AuthorEntity> {
-    return this.authorsService.update(+id, updateAuthorDto);
+    return this.authorsService.update(+id, data);
   }
 
   @Query(() => [AuthorEntity])

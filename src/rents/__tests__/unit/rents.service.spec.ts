@@ -71,7 +71,7 @@ describe("RentsService", () => {
 
   describe("create function", () => {
     it("should create a rent", async () => {
-      const response = await service.create(1, 1);
+      const response: boolean = await service.create(1, 1);
 
       expect(response).toBe(true);
     });
@@ -91,7 +91,7 @@ describe("RentsService", () => {
 
   describe("listcheckout function", () => {
     it("should return a list of rents", async () => {
-      const response = await service.listCheckout(1);
+      const response: RentEntity[] = await service.listCheckout(1);
 
       expect(response).toStrictEqual([new RentEntity()]);
     });
@@ -107,10 +107,10 @@ describe("RentsService", () => {
     it("should return a checkout/rent from a user", async () => {
       jest
         .spyOn(service, "getOneCheckoutOrRented")
-        .mockResolvedValueOnce(new RentEntity());
-      const response = await service.getOneCheckoutOrRented(1, 1);
+        .mockResolvedValueOnce([new RentEntity()]);
+      const response: RentEntity[] = await service.getOneCheckoutOrRented(1, 1);
 
-      expect(response).toBeInstanceOf(RentEntity);
+      expect(response).toStrictEqual([new RentEntity()]);
     });
 
     it("should not return a list of rents because the user doesnt exists (mocked by userId === 0)", async () => {
@@ -128,7 +128,7 @@ describe("RentsService", () => {
 
   describe("confirmpurchase function", () => {
     it("should update all checkout orders", async () => {
-      const response = await service.confirmPurchase(1);
+      const response: boolean = await service.confirmPurchase(1);
 
       expect(response).toBeTruthy();
     });
@@ -142,7 +142,7 @@ describe("RentsService", () => {
 
   describe("listrents function", () => {
     it("should return a list of rents", async () => {
-      const response = await service.listRents(1);
+      const response: RentEntity[] = await service.listRents(1);
 
       expect(response).toStrictEqual([new RentEntity()]);
     });
@@ -156,7 +156,7 @@ describe("RentsService", () => {
 
   describe("returnbook function", () => {
     it("should return a book rented", async () => {
-      const response = await service.returnBook(1, 1);
+      const response: boolean = await service.returnBook(1, 1);
 
       expect(response).toBeTruthy();
     });
@@ -170,7 +170,7 @@ describe("RentsService", () => {
 
   describe("remove function", () => {
     it("should remove a book from checkout", async () => {
-      const response = await service.remove(1, 1);
+      const response: boolean = await service.remove(1, 1);
 
       expect(response).toBeTruthy();
     });

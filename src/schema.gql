@@ -100,41 +100,41 @@ type Query {
 }
 
 type Mutation {
-  login(data: AuthLoginDto!): String!
-  createUser(data: CreateUserDto!): UserEntity!
-  updateUser(data: UpdateUserDto!): UserEntity!
+  login(data: AuthLoginInput!): String!
+  createUser(data: CreateUserInput!): UserEntity!
+  updateUser(data: UpdateUserInput!): UserEntity!
   changeImage(image: Upload): UserEntity!
-  createBook(data: CreateBookDto!): BookEntity!
+  createBook(data: CreateBookInput!): BookEntity!
   deleteBook(id: String!): Boolean!
-  updateBook(id: String!, data: UpdateBookDto!): BookEntity!
-  createCategory(data: CreateCategoryDto!): CategoryEntity!
+  updateBook(id: String!, data: UpdateBookInput!): BookEntity!
+  createCategory(data: CreateCategoryInput!): CategoryEntity!
   createFavorite(bookId: String!): Boolean!
   removeFavorite(bookId: String!): Boolean!
   createCheckout(bookId: String!): Boolean!
   confirmPurchase: Boolean!
   returnBook(id: String!): Boolean!
   removeBook(id: String!): Boolean!
-  createReview(bookId: String!, data: CreateReviewDto!): ReviewEntity!
-  updateReview(id: String!, data: UpdateReviewDto!): Boolean!
+  createReview(bookId: String!, data: CreateReviewInput!): ReviewEntity!
+  updateReview(id: String!, data: UpdateReviewInput!): Boolean!
   deleteReview(id: String!): Boolean!
-  createAuthor(data: CreateAuthorDto!): AuthorEntity!
+  createAuthor(data: CreateAuthorInput!): AuthorEntity!
   deleteAuthor(id: String!): Boolean!
-  updateAuthor(id: String!, data: UpdateAuthorDto!): AuthorEntity!
+  updateAuthor(id: String!, data: UpdateAuthorInput!): AuthorEntity!
 }
 
-input AuthLoginDto {
+input AuthLoginInput {
   username: String!
   password: String!
 }
 
-input CreateUserDto {
+input CreateUserInput {
   username: String!
   password: String!
   confirmPassword: String!
   email: String!
 }
 
-input UpdateUserDto {
+input UpdateUserInput {
   username: String
   email: String
   name: String
@@ -152,7 +152,7 @@ input UpdateUserDto {
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
-input CreateBookDto {
+input CreateBookInput {
   title: String!
   publisher: String!
   sinopsis: String!
@@ -164,7 +164,7 @@ input CreateBookDto {
   category_id: Float!
 }
 
-input UpdateBookDto {
+input UpdateBookInput {
   title: String
   publisher: String
   sinopsis: String
@@ -176,21 +176,21 @@ input UpdateBookDto {
   category_id: Float
 }
 
-input CreateCategoryDto {
+input CreateCategoryInput {
   name: String!
 }
 
-input CreateReviewDto {
+input CreateReviewInput {
   rate: Float!
   text: String!
 }
 
-input UpdateReviewDto {
+input UpdateReviewInput {
   rate: Float
   text: String
 }
 
-input CreateAuthorDto {
+input CreateAuthorInput {
   name: String!
   surname: String!
   description: String!
@@ -199,7 +199,7 @@ input CreateAuthorDto {
   birth_date: String!
 }
 
-input UpdateAuthorDto {
+input UpdateAuthorInput {
   name: String
   surname: String
   description: String

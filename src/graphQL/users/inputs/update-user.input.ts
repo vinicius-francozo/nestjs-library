@@ -4,7 +4,7 @@ import { FileUpload } from "graphql-upload-ts";
 import GraphQLUpload from "graphql-upload/GraphQLUpload.js";
 
 @InputType()
-export class UpdateUserDto {
+export class UpdateUserInput {
   @IsString()
   @IsOptional()
   @Field({ nullable: true })

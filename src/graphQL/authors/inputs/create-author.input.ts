@@ -9,7 +9,7 @@ import {
 import { FileUpload } from "graphql-upload-ts";
 import GraphQLUpload from "graphql-upload/GraphQLUpload.js";
 @InputType()
-export class CreateAuthorDto {
+export class CreateAuthorInput {
   @IsString()
   @IsNotEmpty()
   @Field()

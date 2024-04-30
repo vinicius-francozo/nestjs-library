@@ -70,9 +70,9 @@ describe("FavoritesService", () => {
 
   describe("create function", () => {
     it("should create a favorite", async () => {
-      const response = await service.create(1, 1);
+      const response: boolean = await service.create(1, 1);
 
-      expect(response).toBeInstanceOf(FavoriteEntity);
+      expect(response).toBeTruthy();
     });
 
     it("should not create a favorite because user doesnt exist (mocked by userId === 0)", () => {
@@ -90,7 +90,7 @@ describe("FavoritesService", () => {
 
   describe("getuserfavorite function", () => {
     it("should return the list of the user favorites", async () => {
-      const response = await service.getUserFavorites(1);
+      const response: FavoriteEntity[] = await service.getUserFavorites(1);
 
       expect(response).toStrictEqual([new FavoriteEntity()]);
     });
@@ -104,12 +104,10 @@ describe("FavoritesService", () => {
 
   describe("findOneByUserAndBookId function", () => {
     it("should return a book if it is a users favorite", async () => {
-      jest
-        .spyOn(service, "findOneByUserAndBookId")
-        .mockResolvedValueOnce(new FavoriteEntity());
-      const response = await service.findOneByUserAndBookId(1, 1);
+      jest.spyOn(service, "findOneByUserAndBookId").mockResolvedValueOnce(true);
+      const response: boolean = await service.findOneByUserAndBookId(1, 1);
 
-      expect(response).toBeInstanceOf(FavoriteEntity);
+      expect(response).toBeTruthy();
     });
 
     it("should throw an error because user doesnt exist (mocked by userId === 0)", () => {
@@ -127,7 +125,7 @@ describe("FavoritesService", () => {
 
   describe("remove function", () => {
     it("should remove a book from favorites", async () => {
-      const response = await service.remove(1, 1);
+      const response: boolean = await service.remove(1, 1);
 
       expect(response).toBeTruthy();
     });

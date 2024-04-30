@@ -1,7 +1,12 @@
-import { v2 } from "cloudinary";
+import { ConfigOptions, v2 } from "cloudinary";
 require("dotenv").config();
 
-export const CloudinaryProvider = {
+type CloudinaryProviderType = {
+  provide: string;
+  useFactory: () => ConfigOptions;
+};
+
+export const CloudinaryProvider: CloudinaryProviderType = {
   provide: "Cloudinary",
   useFactory: () => {
     return v2.config({

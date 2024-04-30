@@ -1,11 +1,12 @@
 import { Args, Mutation, Resolver, Query, Context } from "@nestjs/graphql";
 import { ReviewsService } from "../../../reviews/reviews.service";
 import { ReviewEntity } from "../types/review.type";
-import { CreateReviewDto } from "../inputs/create-review.input";
 import { UseGuards } from "@nestjs/common";
 import { AuthGuard } from "src/auth/auth.guard";
-import { UpdateReviewDto } from "../inputs/update-review.input";
 import { UserEntity } from "../../users/types/user.type";
+import { CreateAuthorArgs } from "../../authors/args/create-author.args";
+import { UpdateReviewArgs } from "../args/update-review.args";
+import { CreateReviewArgs } from "../args/create-review.args";
 
 @Resolver("reviews")
 export class ReviewsResolver {
@@ -16,9 +17,9 @@ export class ReviewsResolver {
   createReview(
     @Context("user") user: UserEntity,
     @Args("bookId") bookId: string,
-    @Args("data") createReviewDto: CreateReviewDto
+    @Args() { data }: CreateReviewArgs
   ) {
-    return this.reviewsService.create(+user.id, +bookId, createReviewDto);
+    return this.reviewsService.create(+user.id, +bookId, data);
   }
 
   @Mutation(() => Boolean)
@@ -26,9 +27,9 @@ export class ReviewsResolver {
   updateReview(
     @Context("user") user: UserEntity,
     @Args("id") id: string,
-    @Args("data") updateReviewDto: UpdateReviewDto
+    @Args() { data }: UpdateReviewArgs
   ): Promise<boolean> {
-    return this.reviewsService.update(+user.id, +id, updateReviewDto);
+    return this.reviewsService.update(+user.id, +id, data);
   }
 
   @Mutation(() => Boolean)

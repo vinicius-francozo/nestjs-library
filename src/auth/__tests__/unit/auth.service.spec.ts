@@ -43,7 +43,7 @@ describe("AuthService", () => {
   describe("createtoken function", () => {
     it("should create a token", async () => {
       jest.spyOn(jwtService, "sign").mockReturnValue("faketoken");
-      const response = await service.createToken(new UserEntity());
+      const response: string = await service.createToken(new UserEntity());
 
       expect(response).toBe("faketoken");
     });
@@ -54,7 +54,7 @@ describe("AuthService", () => {
       jest
         .spyOn(jwtService, "verifyAsync")
         .mockResolvedValue({ prop1: "test" });
-      const response = await service.verifyToken("token");
+      const response: { prop1: string } = await service.verifyToken("token");
 
       expect(response).toMatchObject({ prop1: "test" });
     });
@@ -63,7 +63,7 @@ describe("AuthService", () => {
   describe("login function", () => {
     it("should return a token", async () => {
       jest.spyOn(service, "login").mockResolvedValue("faketoken");
-      const response = await service.login("test", "123456");
+      const response: string = await service.login("test", "123456");
 
       expect(response).toBe("faketoken");
     });

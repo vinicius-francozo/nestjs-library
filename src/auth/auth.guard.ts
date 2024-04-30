@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate {
   constructor(private readonly authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const ctx = GqlExecutionContext.create(context).getContext();
+    const ctx: any = GqlExecutionContext.create(context).getContext();
     if (!ctx.headers.authorization) {
       return false;
     }
@@ -25,10 +25,10 @@ export class AuthGuard implements CanActivate {
     if (auth.split(" ")[0] !== "Bearer") {
       throw new HttpException("Invalid token", HttpStatus.UNAUTHORIZED);
     }
-    const token = auth.split(" ")[1];
+    const token: string = auth.split(" ")[1];
 
     try {
-      const decoded = this.authService.verifyToken(token);
+      const decoded: Promise<any> = this.authService.verifyToken(token);
       return decoded;
     } catch (err) {
       const message = "Token error: " + (err.message || err.name);

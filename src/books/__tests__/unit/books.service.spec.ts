@@ -94,7 +94,7 @@ describe("BooksService", () => {
       jest
         .spyOn(cloudinaryService, "uploadImage")
         .mockResolvedValue({} as UploadApiResponse);
-      const response = await service.create(
+      const response: BookEntity = await service.create(
         1,
         BookDataBuilder({ author_id: 1, category_id: 1 })
       );
@@ -144,7 +144,7 @@ describe("BooksService", () => {
 
   describe("searchpaginated function", () => {
     it("should return a list of books", async () => {
-      const response = await service.searchPaginated(5, 1);
+      const response: BookEntity[] = await service.searchPaginated(5, 1);
 
       expect(response).toStrictEqual([new BookEntity()]);
     });
@@ -152,7 +152,7 @@ describe("BooksService", () => {
 
   describe("findall function", () => {
     it("should return a list of books", async () => {
-      const response = await service.findAll();
+      const response: BookEntity[] = await service.findAll();
 
       expect(response).toStrictEqual([new BookEntity()]);
     });
@@ -160,13 +160,13 @@ describe("BooksService", () => {
 
   describe("findeOne function", () => {
     it("should return a book", async () => {
-      const response = await service.findOne(1);
+      const response: BookEntity = await service.findOne(1);
 
       expect(response).toBeInstanceOf(BookEntity);
     });
 
     it("should not return a book because the book doesnt exist (mock by bookId === 0)", async () => {
-      const response = await service.findOne(0);
+      const response: BookEntity = await service.findOne(0);
 
       expect(response).toBeNull();
     });
@@ -174,7 +174,7 @@ describe("BooksService", () => {
 
   describe("listbyname function", () => {
     it("should return a list of books", async () => {
-      const response = await service.listByName("asdd");
+      const response: BookEntity[] = await service.listByName("asdd");
 
       expect(response).toStrictEqual([new BookEntity()]);
     });
@@ -182,7 +182,7 @@ describe("BooksService", () => {
 
   describe("update function", () => {
     it("should update a books", async () => {
-      const response = await service.update(1, {
+      const response: BookEntity = await service.update(1, {
         ...BookDataBuilder({ cover: "" }),
       });
 
@@ -201,7 +201,7 @@ describe("BooksService", () => {
 
   describe("remove function", () => {
     it("should remove a book", async () => {
-      const response = await service.remove(1);
+      const response: boolean = await service.remove(1);
       expect(response).toBeTruthy();
     });
   });
